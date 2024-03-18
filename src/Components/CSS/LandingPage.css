@@ -1,0 +1,34 @@
+.Intro {
+    width: 100%;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+}
+
+.intro-text {
+    text-align: center;
+}
+
+.intro-text h2 {
+    font-weight: 500;
+    font-size: 1.6em;
+    margin-bottom: 10px;
+}
+
+.intro-text p {
+    font-size: 1.1em;
+}
+
+.intro-btn img {
+    margin-top: 20px;
+    cursor: pointer;
+    width: 60px;
+    transition: 0.3s ease-out;
+}
+
+.intro-btn img:hover {
+    transform: scale(1.1);
+}
