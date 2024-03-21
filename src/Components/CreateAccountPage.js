@@ -1,3 +1,4 @@
+import { Link} from "react-router-dom";
 import "./CSS/CreateAccountPage.css"
 
 const CreateAccountPage = () => {
@@ -7,7 +8,7 @@ const CreateAccountPage = () => {
                 <div className="create-account-card">
                     <img className="logo" src={require("./Assets/image 1.png")} alt=""/>
                     <h2 className="header">Create an account</h2>
-                    <p className="header-two">Already have an account? <span>Log in</span></p>
+                    <p className="header-two">Already have an account? <Link to={"/login"}><span>Log in</span></Link></p>
                     <div className="google-signup">
                         <div className="google-icon">
                             <img src={require("./Assets/icons8-google-144.png")} alt="Google Icon"/>

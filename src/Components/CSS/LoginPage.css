@@ -1,7 +1,20 @@
 .login-page {
     width: 100%;
+    height: 100dvh;
     max-height: 100dvh;
     display: flex;
+    font-size: 1em;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.left-form {
+    animation: LoginFadeIn 0.4s linear;
+    padding: 30px;
+    width: 70%;
+    max-width: 70%;
+    display: flex;
+    justify-content: center;
 }
 
 .login-form {
@@ -10,5 +23,139 @@
     display: flex;
     flex-direction: column;
     padding: 30px;
-    width: 60vh;
+    width: 400px;
+}
+
+.logo-title {
+    width: 100%;
+}
+
+.logo-title img {
+    width: 70px;
+}
+
+.logo-title h3 {
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+.login-inputs {
+    width: 100%;
+}
+
+.inputs p {
+    font-size: 0.77em;
+    color: rgb(143, 143, 143);
+    margin-top: 12px;
+}
+
+.terms-conditions {
+    margin-top: 10px;
+    display: flex;
+    height: 30px;
+    width: 100%;
+}
+
+.terms-conditions input[type="checkbox"] {
+    accent-color:  #FF3D00;
+    cursor: pointer;
+}
+
+.terms {
+    margin-left: 6px;
+    display: flex;
+    align-items: center;
+    font-size: 0.77em;
+    color: rgb(143, 143, 143);
+}
+
+.inputs input {
+    width: 100%;
+    height: 34px;
+    border: none;
+    outline-color: #CBCAD7;
+    border: 1px solid rgb(177, 177, 177);
+    border-radius: 8px;
+    padding: 0 10px 0 10px;
+    margin-top: 3px;
+}
+
+.login-form a {
+    text-decoration: none;
+}
+
+.login-btn {
+    cursor: pointer;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 32px;
+    font-size: 0.8em;
+    color: white;
+    background: #FF3D00;
+}
+
+.google-login {
+    padding: 9px;
+    font-size: 0.8em;
+    cursor:pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border: 1px solid rgb(170, 170, 170);
+    border-radius: 6px;
+    transition: 0.3s ease-out;
+}
+
+.signup-link {
+    width: 100%;
+    margin-left: 6px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 0.77em;
+    color: rgb(143, 143, 143);
+}
+
+.signup-link span {
+    cursor: pointer;
+}
+
+.signup-link span:hover {
+    color: rgb(151, 39, 255);
+}
+
+.right-image {
+    animation: LoginSlider 0.5s ease-out ;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100dvh;
+}
+
+.right-image img {
+    height: 100%;
+}
+
+@keyframes LoginSlider {
+    from {
+        transform: translateX(400px);
+    }
+    to {
+        transform: translateX(0px);
+    }
+}
+
+@keyframes LoginFadeIn {
+    from{
+        transform: scale(0.6);
+        opacity: 0;
+    }
+    to{
+        transform: scale(1);
+        opacity: 1;
+    }
 }
