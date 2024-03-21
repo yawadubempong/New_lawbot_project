@@ -3,6 +3,7 @@ import "./CSS/CreateAccountPage.css"
 import { useState } from "react";
 
 const CreateAccountPage = () => {
+    // user email and password are stored in the state below(use userCred.userEmail and userCred.userPassword to call it out)
     const [userCred, setUserCred] = useState({
         userEmail: "",
         userPassword: ""
