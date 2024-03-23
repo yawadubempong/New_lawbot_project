@@ -1,8 +1,9 @@
 .chatroom-page {
+    overflow: hidden;
     align-items: center;
     display: flex;
     width: 100%;
-    background: #ffdede;
+    background: #FCEAE7;
     height: 100dvh;
     font-size: 1em;
     padding: 5px;
@@ -45,6 +46,7 @@
 }
 
 .newchat {
+    cursor: pointer;
     font-size: 0.78em;
     margin-right: 15px;
     border-radius: 20px;
@@ -127,6 +129,16 @@
     color: #FF3D00;
     background: #ffdbd0;
 } 
+
+.active {
+    color: #FF3D00;
+    background: #ffdbd0;
+}
+
+.active .chatimg,
+.active .chatsentence {
+    transform: translateX(10px);
+}
 
 .chat:hover .chatimg,
 .chat:hover .chatsentence {
@@ -225,12 +237,15 @@
 }
 
 .chatroom-textarea {
+    z-index: 1;
+    overflow-y: scroll;
     padding: 20px;
     height: 100%;
     max-height: 100%;
 }
 
 .textbox {
+    z-index: 3;
     position: relative;
     top: -60px;
     display: flex;
@@ -239,6 +254,7 @@
 }
 
 .img-textbox {
+    box-shadow: 0px 0px 5px 2px rgb(199, 199, 199);
     border-radius: 20px;
     padding: 0 5px 0px 3px;
     display: flex;
@@ -270,7 +286,6 @@
 }
 
 .audio {
-    cursor: pointer;
     margin-left: 5px;
     display: flex;
     height: 100%;
@@ -279,10 +294,74 @@
 }
 
 .audio img {
+    cursor: pointer;
+    z-index: 4;
+    box-shadow: 0px 0px 5px 2px rgb(197, 197, 197);
     background: #FF3D00;
     border-radius: 50%;
     padding: 7px;
     height: 32px;
+}
+
+/* .pulse {
+    z-index: 1;
+    background: #FF3D00;
+    height: 32px;
+    width: 32px;
+
+} */
+
+/* .pulse:before,
+.pulse:after {
+    
+} */
+.stop {
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    background: #FF3D00;
+    height: 32px;
+    width: 32px;
+}
+
+.stop:before,
+.stop:after {
+    content: "";
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background-color: #FF3D00;
+    border-radius: 20px;
+    z-index: -1;
+    opacity: 0.7;
+}
+
+.stop:before {
+    animation: pulse 2s ease-out infinite;
+}
+
+.stop:after {
+    animation: pulse 2s 1s ease-out infinite;
+}
+
+.transparent-bar {
+    z-index: 2;
+    width: 100%;
+    height: 80px;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fceae72a, #FCEAE7);
+}
+
+@keyframes pulse {
+    100%{
+        transform: scale(1.7);
+        opacity: 0;
+    }
 }
 
 

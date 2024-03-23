@@ -9,7 +9,13 @@
     font-size: 1em;
 }
 
+.intro-image {
+    width: 120px;
+}
 
+.intro-image img {
+    width: 100%;
+}
 
 .intro-text {
     text-align: center;

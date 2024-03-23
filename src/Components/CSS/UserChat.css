@@ -1,0 +1,116 @@
+.user-bot-chat {
+    font-size: 1em;
+    padding: 30px;
+}
+
+.user-response {
+    display: flex;
+    align-items: center;
+    
+}
+
+.user-profile {
+    height: 26px;
+}
+
+.user-profile img {
+    height: 100%;
+}
+
+.user-text {
+    margin-left: 6px;
+    font-size: 0.86em;
+}
+
+.bot-profile {
+    height: fit-content;
+    display: flex;
+    margin-left: 31px;
+    font-size: 0.86em;
+    font-style: italic;
+    color: #FF3D00;
+}
+
+.bot-name {
+    display: flex;
+    align-items: center;
+}
+
+.bot-arrow img {
+    padding: 5px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.bot-text {
+    font-size: 0.84em;
+    margin-left: 31px;
+}
+
+.bot-response {
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgb(199, 199, 199);
+}
+
+.bot-text ol {
+    margin-left: 16px;
+}
+
+.bot-text p {
+    font-weight: 600;
+}
+
+.bot-text li {
+    margin-top: 10px;
+}
+
+.last-bot-response {
+    margin-top: 10px;
+}
+
+.like-copy-regen {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+}
+
+.like-copy {
+    margin-left: 31px;
+    font-size: 0.83em;
+    padding: 3px 8px 3px 8px;
+    width: fit-content;
+    display: flex;
+    background: white;
+    color: #585858;
+    border-radius: 30px;
+}
+
+.like-copy div {
+    cursor: pointer;
+    margin: 0 5px 0 5px;
+}
+
+.like-copy div:nth-child(2) {
+    border-left: 1px solid #808080;
+    border-right: 1px solid #808080;
+    padding: 0 5px 0 5px;
+}
+
+.regen {
+    height: 26px;
+    font-size: 0.83em;
+    padding: 3px 8px 3px 8px;
+    width: fit-content;
+    display: flex;
+    background: white;
+    color: #585858;
+    border-radius: 30px;
+}
+
+.regen-img img{
+    height: 100%;
+    margin-right: 5px;
+    cursor: pointer;
+}

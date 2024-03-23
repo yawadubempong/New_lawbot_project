@@ -1,7 +1,30 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./CSS/ChatRoom.css"
 import NewChat from "./NewChat";
+import UserChat from "./UserChat"
+import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import { useState } from "react";
+import {  faStop } from "@fortawesome/free-solid-svg-icons";
+import SpeechRecognition, {useSpeechRecognition} from "react-speech-recognition/lib/SpeechRecognition";
 
 const ChatRoom = () => {
+    const startListening = () => SpeechRecognition.startListening({continuous: true, language: 'en-IN'})
+    const { transcript, browserSupportSpeechRecognition } = useSpeechRecognition()
+    const [currentChat, setCurrentChat] = useState("newChat");
+    const [speech, setSpeech] = useState("start");
+    
+    // console.log(transcript)
+    const active = (e) => {
+        if(e.target === "chat"){
+            
+        }
+    }
+
+    const handleChange = (e) => {
+        // setChatBox(e.target.value)
+        // console.log(chatbox)
+    }
+
     return (
         <>
             <div className="chatroom-page">
@@ -13,7 +36,9 @@ const ChatRoom = () => {
                         <div className="nav-logo-text">Law Chatbot</div>
                     </div>
                     <div className="newchat-search">
-                        <div className="newchat">
+                        <div className="newchat" onClick={(e)=> {
+                            setCurrentChat("newChat")
+                        }}>
                             <img src={require("./Assets/icons8-add-48.png")} alt="plus sign"/>
                             <div className="newchat-text">New Chat</div>
                         </div>
@@ -26,13 +51,16 @@ const ChatRoom = () => {
                         <div>Clear All</div>
                     </div>
                     <div className="prev-chat-nav">
-                        <div className="chat">
+                        <div className="chat" onClick={(e)=> {
+                             console.log(e.currentTarget.className)
+                            setCurrentChat("prevChat")
+                        }}>
                             <div className="chaticon-sentence"> 
                                 <img className="chatimg" src={require("./Assets/icons8-comments-96.png")} alt="comment icon" />
                                 <div className="chatsentence">{"First Chat sentence...."}</div>
                             </div>
                             <div className="delete">
-                                <img src={require("./Assets/icons8-delete-192.png")} alt="delete icon" />
+                                 <FontAwesomeIcon icon={faTrashCan}/>
                             </div>
                         </div>
                         <div className="chat">
@@ -41,34 +69,7 @@ const ChatRoom = () => {
                                 <div className="chatsentence">{"First Chat sentence...."}</div>
                             </div>
                             <div className="delete">
-                                <img src={require("./Assets/icons8-delete-192.png")} alt="delete icon" />
-                            </div>
-                        </div>
-                        <div className="chat">
-                            <div className="chaticon-sentence"> 
-                                <img className="chatimg" src={require("./Assets/icons8-comments-96.png")} alt="comment icon" />
-                                <div className="chatsentence">{"First Chat sentence...."}</div>
-                            </div>
-                            <div className="delete">
-                                <img src={require("./Assets/icons8-delete-192.png")} alt="delete icon" />
-                            </div>
-                        </div>
-                        <div className="chat">
-                            <div className="chaticon-sentence"> 
-                                <img className="chatimg" src={require("./Assets/icons8-comments-96.png")} alt="comment icon" />
-                                <div className="chatsentence">{"First Chat sentence...."}</div>
-                            </div>
-                            <div className="delete">
-                                <img src={require("./Assets/icons8-delete-192.png")} alt="delete icon" />
-                            </div>
-                        </div>
-                        <div className="chat">
-                            <div className="chaticon-sentence"> 
-                                <img className="chatimg" src={require("./Assets/icons8-comments-96.png")} alt="comment icon" />
-                                <div className="chatsentence">{"First Chat sentence...."}</div>
-                            </div>
-                            <div className="delete">
-                                <img src={require("./Assets/icons8-delete-192.png")} alt="delete icon" />
+                                 <FontAwesomeIcon icon={faTrashCan}/>
                             </div>
                         </div>
                     </div>
@@ -89,18 +90,34 @@ const ChatRoom = () => {
                 </div>
                 <div className="chatroom">
                     <div className="chatroom-textarea">
-                        <NewChat/>
+                        {
+                            currentChat === "newChat"? <NewChat/> : <UserChat/> 
+                        }
                     </div>
                     <div className="textbox">
                         <div className="img-textbox">
                             <img className="brain-icon" src={require("./Assets/icons8-brain-96.png")} alt="brain icon"/>
-                            <div className="textbox-input"><input type={"text"} placeholder="What's in your mind?..."/></div>
+                            <div className="textbox-input"><input type={"text"} value={transcript} onChange={handleChange}  placeholder="What's in your mind?..."/></div>
                             <img className="send-icon" src={require("./Assets/icon1.png")} alt="paper plane"/>
                         </div>
                         <div className="audio">
-                            <img src={require("./Assets/icon2.png")} alt="microphone icon"/>
+                            {
+                                speech === "start" ? <img src={require("./Assets/icon2.png")} onClick={() => {
+                                    startListening()
+                                    setSpeech("stop")
+                                }} alt="microphone icon"/>: 
+                                <div className="stop" onClick={()=> {
+                                    setSpeech("start")
+                                    SpeechRecognition.stopListening()
+                                }}>
+                                    <div className="pulse"></div>
+                                    <FontAwesomeIcon icon={faStop} />
+                                </div>
+                            }
+                            
                         </div>
                     </div>
+                    <div className="transparent-bar"></div>
                 </div>
             </div>
         </>
