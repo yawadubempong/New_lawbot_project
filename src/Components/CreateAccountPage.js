@@ -55,15 +55,19 @@ const CreateAccountPage = () => {
                             </div>
                             <div id="user-email" className="email-input">
                                 <h3>Enter your email address to create an account.</h3>
-                                <p>Your email</p>
+                                <p>Firstname<span> *</span></p>
+                                <input type="text" value={userCred.userEmail} onChange={EmailHandleChange}/>
+                                <p>Lastname</p>
+                                <input type="text" value={userCred.userEmail} onChange={EmailHandleChange}/>
+                                <p>Your email<span> *</span></p>
                                 <input type="email" value={userCred.userEmail} onChange={EmailHandleChange}/>
                             </div>
                         </div>
                         <div id="user-password" className="user-password">
                             <h3>Enter your password to create an account.</h3>
-                            <p>password</p>
+                            <p>Password<span> *</span></p>
                             <input type="password" value={userCred.userPassword} onChange={PassHandleChange}/>
-                            <p>Confirm password</p>
+                            <p>Confirm password<span> *</span></p>
                             <input type="password" />
                         </div>
                         <div id="continue" className="continue" onClick={emailDisplay}>

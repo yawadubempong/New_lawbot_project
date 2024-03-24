@@ -3,16 +3,28 @@ import "./CSS/ChatRoom.css"
 import NewChat from "./NewChat";
 import UserChat from "./UserChat"
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
-import { useState } from "react";
-import {  faStop } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import {  faClose, faMagnifyingGlass, faStop } from "@fortawesome/free-solid-svg-icons";
 import SpeechRecognition, {useSpeechRecognition} from "react-speech-recognition/lib/SpeechRecognition";
 
 const ChatRoom = () => {
     const startListening = () => SpeechRecognition.startListening({continuous: true, language: 'en-IN'})
-    const { transcript, browserSupportSpeechRecognition } = useSpeechRecognition()
+    const { transcript, resetTranscript, browserSupportSpeechRecognition } = useSpeechRecognition()
     const [currentChat, setCurrentChat] = useState("newChat");
     const [speech, setSpeech] = useState("start");
-    
+    const [inputState, setInputState] = useState()
+    useEffect(()=> {
+        setInputState(transcript) 
+    }, [transcript])
+    console.log(transcript)
+
+    const newChat = document.getElementById("newChat")
+    const iconInput = document.getElementById("iconInput");
+    const searchBtn = document.getElementById("search-btn")
+    const expand = () => {
+        newChat.classList.toggle("collapse");
+        searchBtn.classList.toggle("expand")
+    }
     // console.log(transcript)
     const active = (e) => {
         if(e.target === "chat"){
@@ -21,8 +33,7 @@ const ChatRoom = () => {
     }
 
     const handleChange = (e) => {
-        // setChatBox(e.target.value)
-        // console.log(chatbox)
+        setInputState(e.target.value)
     }
 
     return (
@@ -36,14 +47,18 @@ const ChatRoom = () => {
                         <div className="nav-logo-text">Law Chatbot</div>
                     </div>
                     <div className="newchat-search">
-                        <div className="newchat" onClick={(e)=> {
+                        <div id="newChat" className="newchat" onClick={(e)=> {
                             setCurrentChat("newChat")
                         }}>
-                            <img src={require("./Assets/icons8-add-48.png")} alt="plus sign"/>
-                            <div className="newchat-text">New Chat</div>
+                            <div className="newchat-image"><img src={require("./Assets/icons8-add-48.png")} alt="plus sign"/></div>
+                            <div  className="newchat-text">New Chat</div>
                         </div>
-                        <div className="search-icon">
-                            <img src={require("./Assets/icons8-search-90.png")} alt="search icon"/>
+                        <div id="search-btn"  className="search-icon">
+                            <div id="iconInput" className="icon-input"><input type={"text"} placeholder="Search.."/></div>
+                            <div onClick={expand} className="icon-btns">
+                                <div className="icon-search"><FontAwesomeIcon icon={faMagnifyingGlass} /></div>
+                                <div className="icon-close"><FontAwesomeIcon icon={faClose}/></div>
+                            </div>
                         </div>
                     </div>
                     <div className="navlinks-title">
@@ -97,18 +112,20 @@ const ChatRoom = () => {
                     <div className="textbox">
                         <div className="img-textbox">
                             <img className="brain-icon" src={require("./Assets/icons8-brain-96.png")} alt="brain icon"/>
-                            <div className="textbox-input"><input type={"text"} value={transcript} onChange={handleChange}  placeholder="What's in your mind?..."/></div>
+                            <div className="textbox-input"><textarea   placeholder="What's in your mind?" onChange={handleChange} value={inputState}></textarea></div>
                             <img className="send-icon" src={require("./Assets/icon1.png")} alt="paper plane"/>
                         </div>
                         <div className="audio">
                             {
                                 speech === "start" ? <img src={require("./Assets/icon2.png")} onClick={() => {
-                                    startListening()
-                                    setSpeech("stop")
+                                    startListening();
+                                    setSpeech("stop");
+                                    resetTranscript();
+                                    setInputState("")
                                 }} alt="microphone icon"/>: 
                                 <div className="stop" onClick={()=> {
                                     setSpeech("start")
-                                    SpeechRecognition.stopListening()
+                                    SpeechRecognition.stopListening();
                                 }}>
                                     <div className="pulse"></div>
                                     <FontAwesomeIcon icon={faStop} />

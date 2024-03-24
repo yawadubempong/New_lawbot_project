@@ -43,9 +43,12 @@
     padding: 0 25px 0 25px;
     display: flex;
     width: 100%;
+    height: 36px;
 }
 
+
 .newchat {
+    transition: 0.3s ease-out;
     cursor: pointer;
     font-size: 0.78em;
     margin-right: 15px;
@@ -53,29 +56,107 @@
     display: flex;
     background: #FF3D00;
     color: #fff;
-    width: 100%;
+    width: 210px;
     justify-content: center;
     align-items: center;
     padding: 6px;
 }
 
-.newchat img{
+.newchat-image {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 37px;
+    height: 37px;
+}   
+
+.newchat-image img {
     height: 17px;
-    margin-right: 4px;
 }
+
+.expand  {
+    width: 210px !important;
+    background: #0000 !important;
+    border: 1px solid black;
+
+}
+
+.expand .icon-input {
+    transition: 0.5s linear;
+    opacity: 1;
+    display: flex;
+}
+
+.expand .icon-close {
+    display: flex;
+    color: #000000;
+}
+
+.expand .icon-search {
+    display: none;
+}
+
+.collapse {
+    width: 37px !important;
+}
+
+.newchat-text {
+    margin-left: -6px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.collapse .newchat-text {
+    display: none;
+}
+
 
 .search-icon {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: end;
     background: rgb(0, 0, 0);
+    color: #fff;
+    padding: 0px;
+    width: 37px;
+    border-radius: 20px;
+    transition: 0.3s ease-out;
+}
+
+
+.icon-input {
+    opacity: 0;
+    display: none;
+}
+
+
+.icon-input input{
+    background: transparent;
+    height: 100%;
+    width: 100%;
+    border: none;
+    outline: none;
+}
+
+.icon-search {
+    cursor: pointer;
     padding: 10px;
-    border-radius: 50%;
+}
+
+.icon-close {
+    cursor: pointer;
+    padding: 10px;
+    display: none;
+}
+
+.search-icon:hover {
+    border: 1px solid black;
 }
 
 .search-icon img{
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
 }
 
 .navlinks-title {
@@ -245,6 +326,7 @@
 }
 
 .textbox {
+    height: fit-content;
     z-index: 3;
     position: relative;
     top: -60px;
@@ -276,8 +358,19 @@
     height: 80%;
 }
 
-.textbox-input input{
-    padding: 0 10px 0 0;
+.textbox-input {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.textbox-input textarea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: max-content;
+    resize: none;
+    padding: 12px 10px 0 0;
     font-size: 0.8em;
     width: 600px;
     height: 100%;
