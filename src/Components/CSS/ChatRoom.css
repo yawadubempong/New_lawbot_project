@@ -284,6 +284,11 @@
     border-radius: 20px;
 }
 
+.settings:hover {
+    background: #c7c7c7;
+    transition: 0.4s ease-out;
+}
+
 .settings img {
     margin-right: 6px;
     background: rgb(209, 209, 209);
@@ -326,10 +331,10 @@
 }
 
 .textbox {
-    height: fit-content;
     z-index: 3;
-    position: relative;
-    top: -60px;
+    position: sticky;
+    bottom: 0;
+    padding-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -338,16 +343,39 @@
 .img-textbox {
     box-shadow: 0px 0px 5px 2px rgb(199, 199, 199);
     border-radius: 20px;
-    padding: 0 5px 0px 3px;
+    padding: 0 5px 0px 0px;
     display: flex;
     background: #fff;
     align-items: center;
+    min-height: 40px;
+    width: 640px;
+}
+
+.textarea {
+    border-radius: 20px 0 0 20px ;
+    width: 600px;
     height: 40px;
+    padding: 12px 12px 12px 3px;
+    font-size: 0.8em;
+    outline: none;
+    resize: none;
+    border: none;
+}
+
+.img-textbox textarea::-webkit-scrollbar{
+    width: 0px;
+}
+
+.img-textbox textarea:is(:focus, :valid){
 }
 
 .brain-icon {
-    padding: 9px;
+    width: 32px;
+    padding: 6px;
     height: 100%;
+}
+.focus .brain-icon {
+    display: none !important;
 }
 
 .send-icon {
@@ -355,27 +383,36 @@
     background: #FF3D00;
     border-radius: 50%;
     padding: 7px;
-    height: 80%;
+    height: 32px;
+    width: 32px;
 }
 
 .textbox-input {
-    height: 40px;
+    height: auto;
     display: flex;
     align-items: center;
 }
 
-.textbox-input textarea{
-    display: flex;
+.textbox-input #txt{
+    padding: 5px 8px 5px 10px;
+    flex-wrap: wrap;
+    overflow: hidden;
+    border-radius: 20px 0 0 20px;
+    display: block;
     justify-content: center;
     align-items: center;
-    height: max-content;
-    resize: none;
-    padding: 12px 10px 0 0;
+    height: 100%;
     font-size: 0.8em;
     width: 600px;
-    height: 100%;
     border: none;
     outline: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 200px;
+}
+
+[contentEditable=true]:empty:before {
+    content: attr(placeholder);
 }
 
 .audio {

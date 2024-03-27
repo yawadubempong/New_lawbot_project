@@ -129,7 +129,6 @@
 }
 
 .right-image {
-    animation: LoginSlider 0.5s ease-out ;
     display: flex;
     justify-content: center;
     align-items: center;

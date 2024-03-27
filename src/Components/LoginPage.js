@@ -14,9 +14,9 @@ const LoginPage = () => {
                         <div className="login-inputs">
                             <div className="inputs">
                                 <p>Email Address</p>
-                                <input type="email" placeholder="Enter your email address"/>
+                                <input type="text" placeholder="Enter your email address"/>
                                 <p>Password</p>
-                                <input type="email" placeholder="Enter your password"/>
+                                <input type="text" placeholder="Enter your password"/>
                             </div>
                             <div className="terms-conditions">
                                 <input type={"checkbox"} />

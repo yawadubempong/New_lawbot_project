@@ -185,6 +185,21 @@
     display: none;
 }
 
+.preloader {
+    width: 100%;
+    height: 100dvh;
+    position: absolute;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preloader img {
+    animation: breathing 0.8s linear infinite alternate-reverse;
+    width: 50px;
+}
+
 @keyframes passSlider {
     from {
         transform: translateX(300px);
@@ -200,6 +215,12 @@
     }
     to {
         opacity: 1;
+    }
+}
+
+@keyframes breathing {
+    100%{
+        transform: scale(1.2);
     }
 }
 

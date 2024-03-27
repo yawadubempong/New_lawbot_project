@@ -3,41 +3,70 @@ import "./CSS/ChatRoom.css"
 import NewChat from "./NewChat";
 import UserChat from "./UserChat"
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {  faClose, faMagnifyingGlass, faStop } from "@fortawesome/free-solid-svg-icons";
 import SpeechRecognition, {useSpeechRecognition} from "react-speech-recognition/lib/SpeechRecognition";
+import Settings from "./Settings";
 
 const ChatRoom = () => {
     const startListening = () => SpeechRecognition.startListening({continuous: true, language: 'en-IN'})
-    const { transcript, resetTranscript, browserSupportSpeechRecognition } = useSpeechRecognition()
+    const { transcript, listening, resetTranscript, browserSupportSpeechRecognition } = useSpeechRecognition()
     const [currentChat, setCurrentChat] = useState("newChat");
     const [speech, setSpeech] = useState("start");
-    const [inputState, setInputState] = useState()
-    useEffect(()=> {
-        setInputState(transcript) 
-    }, [transcript])
-    console.log(transcript)
-
+    const [inputState, setInputState] = useState("")
+    const [textboxTranscript, setTextboxTranscript] = useState("")
+    const textAreaRef = useRef(null);
     const newChat = document.getElementById("newChat")
     const iconInput = document.getElementById("iconInput");
-    const searchBtn = document.getElementById("search-btn")
+    const searchBtn = document.getElementById("search-btn");
+    const [chatData, setChatData ] = useState([]);
+    const [settingDisplay, setSettingsDisplay] = useState(false)
+    const [isFocused, setIsFocused] = useState(false)
     const expand = () => {
         newChat.classList.toggle("collapse");
         searchBtn.classList.toggle("expand")
     }
-    // console.log(transcript)
+   console.log(textboxTranscript)
+
+
     const active = (e) => {
         if(e.target === "chat"){
             
         }
     }
 
-    const handleChange = (e) => {
-        setInputState(e.target.value)
-    }
+    useEffect(() => {
+        if(inputState === "") {
+            document.querySelector(".brain-icon").style.display = "block"
+            document.querySelector(".textarea").style.marginLeft = "3px" 
+        }else {
+            document.querySelector(".brain-icon").style.display = "none" 
+            document.querySelector(".textarea").style.marginLeft = "32px" 
+            
+        }
+    }, [inputState])
+
+    // useEffect(() => {
+    //     setInputState()
+    // }, [listening])
+
+
+
+
+    const resizeTextArea = () => {
+        if(!textAreaRef.current) {
+            return;
+        }
+        textAreaRef.current.style.height= "40px";
+        textAreaRef.current.style.height= `${textAreaRef.current.scrollHeight}px`
+    };
 
     return (
         <>
+            {
+                settingDisplay === true ? 
+                <Settings/> : null
+            }
             <div className="chatroom-page">
                 <div className="sidenav">
                     <div className="nav-logo-title">
@@ -67,7 +96,7 @@ const ChatRoom = () => {
                     </div>
                     <div className="prev-chat-nav">
                         <div className="chat" onClick={(e)=> {
-                             console.log(e.currentTarget.className)
+                            console.log(e.currentTarget.className)
                             setCurrentChat("prevChat")
                         }}>
                             <div className="chaticon-sentence"> 
@@ -75,7 +104,7 @@ const ChatRoom = () => {
                                 <div className="chatsentence">{"First Chat sentence...."}</div>
                             </div>
                             <div className="delete">
-                                 <FontAwesomeIcon icon={faTrashCan}/>
+                                <FontAwesomeIcon icon={faTrashCan}/>
                             </div>
                         </div>
                         <div className="chat">
@@ -84,7 +113,7 @@ const ChatRoom = () => {
                                 <div className="chatsentence">{"First Chat sentence...."}</div>
                             </div>
                             <div className="delete">
-                                 <FontAwesomeIcon icon={faTrashCan}/>
+                                <FontAwesomeIcon icon={faTrashCan}/>
                             </div>
                         </div>
                     </div>
@@ -93,7 +122,7 @@ const ChatRoom = () => {
                         <div className="hr two"></div>
                     </div>
                     <div className="settings-account">
-                        <div className="settings">
+                        <div onClick={()=>{setSettingsDisplay(true)}} className="settings">
                             <img src={require("./Assets/icons8-settings-128.png")} alt="settings icon"/>
                             <div>Settings</div>
                         </div>
@@ -106,14 +135,44 @@ const ChatRoom = () => {
                 <div className="chatroom">
                     <div className="chatroom-textarea">
                         {
-                            currentChat === "newChat"? <NewChat/> : <UserChat/> 
+                            currentChat === "newChat"? <NewChat/> : <UserChat chatData={chatData}/> 
                         }
                     </div>
                     <div className="textbox">
                         <div className="img-textbox">
                             <img className="brain-icon" src={require("./Assets/icons8-brain-96.png")} alt="brain icon"/>
-                            <div className="textbox-input"><textarea   placeholder="What's in your mind?" onChange={handleChange} value={inputState}></textarea></div>
-                            <img className="send-icon" src={require("./Assets/icon1.png")} alt="paper plane"/>
+                            {speech === "start" ? 
+                                <textarea required 
+                                value={inputState}
+                                className="textarea" 
+                                placeholder="What's in your mind?"
+                                ref={textAreaRef}
+                                onChange={(e) => {
+                                    setInputState(e.target.value)
+                                    resizeTextArea()
+                                }}
+                                ></textarea> : 
+                                <textarea required 
+                                value={transcript}
+                                className="textarea" 
+                                placeholder="What's in your mind?"
+                                ref={textAreaRef}
+                                onChange={(e) => {
+                                    resizeTextArea()
+                                }}
+                                ></textarea>
+
+
+                            }
+                            {/* <div className="textbox-input"><div contentEditable="true" data-autoresize  id="txt" placeholder="What's in your mind?" onChange={handleChange}></div></div> */}
+                            <img className="send-icon" onClick={()=> {
+                                setCurrentChat("chatRoom")
+                                setChatData(prevData => [...prevData, {
+                                    userMessage: inputState,
+                                    botResponse: "Hello, how may I help you?"
+                                }])
+                               setInputState("")
+                            }} src={require("./Assets/icon1.png")} alt="paper plane"/>
                         </div>
                         <div className="audio">
                             {
@@ -126,6 +185,7 @@ const ChatRoom = () => {
                                 <div className="stop" onClick={()=> {
                                     setSpeech("start")
                                     SpeechRecognition.stopListening();
+                                    setInputState(transcript)
                                 }}>
                                     <div className="pulse"></div>
                                     <FontAwesomeIcon icon={faStop} />
