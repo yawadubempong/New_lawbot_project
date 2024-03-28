@@ -24,7 +24,7 @@
     justify-content: center;
     font-size: 1em;
     background: white;
-    padding: 35px 35px 35px 35px;
+    padding: 20px 35px 20px 35px;
     border-radius: 10px;
 }
 
@@ -117,6 +117,25 @@
     font-weight: 300;
 }
 
+.first-last-name {
+    display: flex;
+    justify-content: space-between;
+}
+
+.first-name input,
+.last-name input {
+    width: 100%;
+}
+
+.first-name {
+   width: 150px;
+}
+
+.last-name {
+   width: 150px;
+}
+
+
 .user-email-password {
     width: 100%;
 }
@@ -160,14 +179,11 @@
 .user-password {
     z-index: 4;
     width: 100%;
-    height: 144px;
-    display: none;
     flex-direction: column;
 }
 
 
-.signup-btn,
-.continue {
+.signup-btn {
     cursor: pointer;
     border-radius: 15px;
     display: flex;
@@ -177,12 +193,13 @@
     height: 32px;
     font-size: 0.8em;
     color: white;
-    margin-top: 20px;
-    background: #CBCAD7;
+    background: #FF3D00;
 }
 
 .signup-btn {
-    display: none;
+    border: none;
+    outline: none;
+    margin-top: 20px;
 }
 
 .preloader {

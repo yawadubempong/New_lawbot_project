@@ -11,6 +11,8 @@ const CreateAccountPage = () => {
     const [userEmail, setUserEmail] = useState("")
     const [userPassword, setPassword] = useState("")
     const [userConfirmPassword, setUserConfirmPassword] = useState("")
+
+    const [isError, setIsError] = useState()
     
 
     
@@ -29,25 +31,30 @@ const CreateAccountPage = () => {
         document.getElementById("signup-btn").style.display = "flex";
     }
 
-useEffect(()=> {
+useEffect(()=> { 
         if(userFirstName !== "" && userEmail !== ""){
             setSlide("slide")
+            document.getElementById("continue").style.backgroundColor = "#FF3D00";
         }else{
             setSlide("none")
+            // document.getElementById("continue").style.backgroundColor = "#ffb6a0";
         }
 },[userFirstName, userEmail])
 
 const schema = yup.object().shape({
-    fullName: yup.string().required(),
+    firstName: yup.string().required(),
     email: yup.string().email().required(),
     password: yup.string().min(4).required(),
     confirmPassword: yup.string().oneOf([yup.ref("password"), null]).required()
 
 })
 
-const {register, handleSubmit} = useForm({
+const {register, handleSubmit, formState: {errors, isValid}, watch} = useForm({
     resolver: yupResolver(schema)
 })
+
+
+console.log(errors.firstName?.message ? "true":  "false")
 
 const onSubmit = (data) => {
     console.log(data)
@@ -82,29 +89,34 @@ const onSubmit = (data) => {
                                     <div className="line2"></div>
                                 </div>
                                 <div id="user-email" className="email-input">
-                                    <h3>Enter your email address to create an account.</h3>
-                                    <p>Firstname<span> *</span></p>
-                                    <input type="text" name="firstName" value={userFirstName} {...register("firstName")} onChange={(e)=> {
-                                        setUserFirstName(e.target.value)
-                                    }}/>
-                                    <p>Lastname</p>
-                                    <input type="text" name="lastName"  {...register("lastName")}/>
+                                    <h3>Enter your info to create an account.</h3>
+                                    <div className="first-last-name">
+                                        <div className="first-name">
+                                            <p>Firstname<span> *</span></p>
+                                            <input type="text" name="firstName" value={userFirstName} required {...register("firstName")} onChange={(e)=> {
+                                                setUserFirstName(e.target.value)
+                                            }}/>
+                                        </div>
+                                        <div className="last-name">
+                                            <p>Lastname</p>
+                                            <input type="text" name="lastName"  {...register("lastName")}/>
+                                        </div>
+                                    </div>
                                     <p>Your email<span> *</span></p>
-                                    <input type="text" name="userEmail" value={userEmail} {...register("email")} onChange={(e)=> {
+                                    <input type="text" name="userEmail" value={userEmail} required  {...register("email")} onChange={(e)=> {
                                         setUserEmail(e.target.value)
                                     }}/>
                                 </div>
                             </div>
                             <div id="user-password" className="user-password">
-                                <h3>Enter your password to create an account.</h3>
                                 <p>Password<span> *</span></p>
-                                <input type="password" name="userPassword" value={userPassword} {...register("password")} onChange={(e)=> {
+                                <input type="password" name="userPassword" value={userPassword} required  {...register("password")} onChange={(e)=> {
                                     setPassword(e.target.value)
                                 }}/>
                                 <p>Confirm password<span> *</span></p>
-                                <input type="password" {...register("confirmPassword")} />
+                                <input type="password" required  {...register("confirmPassword")} />
                             </div>
-                            <div id="continue" className="continue" onClick={()=>{
+                            {/* <div id="continue" className="continue" onClick={()=>{
                                 if(slide === "none") {
                                     return null
                                 }else {
@@ -112,7 +124,7 @@ const onSubmit = (data) => {
                                 }
                             }}>
                                 <p>Continue</p>
-                            </div>
+                            </div> */}
                             <button type={"submit"}  id="signup-btn" className="signup-btn" >
                                 <p>Create an Account</p>
                             </button>
