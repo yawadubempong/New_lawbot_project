@@ -9,7 +9,6 @@
 }
 
 .left-form {
-    animation: LoginFadeIn 0.4s linear;
     padding: 30px;
     width: 70%;
     max-width: 70%;
@@ -85,6 +84,8 @@
 }
 
 .login-btn {
+    outline: none;
+    border: none;
     cursor: pointer;
     border-radius: 15px;
     display: flex;
@@ -137,24 +138,4 @@
 
 .right-image img {
     height: 100%;
-}
-
-@keyframes LoginSlider {
-    from {
-        transform: translateX(400px);
-    }
-    to {
-        transform: translateX(0px);
-    }
-}
-
-@keyframes LoginFadeIn {
-    from{
-        transform: scale(0.6);
-        opacity: 0;
-    }
-    to{
-        transform: scale(1);
-        opacity: 1;
-    }
 }

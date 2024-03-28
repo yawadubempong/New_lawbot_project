@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import {  faClose, faMagnifyingGlass, faStop } from "@fortawesome/free-solid-svg-icons";
 import SpeechRecognition, {useSpeechRecognition} from "react-speech-recognition/lib/SpeechRecognition";
 import Settings from "./Settings";
+import { ref } from "yup";
 
 const ChatRoom = () => {
     const startListening = () => SpeechRecognition.startListening({continuous: true, language: 'en-IN'})
@@ -16,9 +17,9 @@ const ChatRoom = () => {
     const [inputState, setInputState] = useState("")
     const [textboxTranscript, setTextboxTranscript] = useState("")
     const textAreaRef = useRef(null);
-    const newChat = document.getElementById("newChat")
+    const newChat = useRef()
     const iconInput = document.getElementById("iconInput");
-    const searchBtn = document.getElementById("search-btn");
+    const searchBtn = useRef();
     const [chatData, setChatData ] = useState([]);
     const [settingDisplay, setSettingsDisplay] = useState(false)
     const [isFocused, setIsFocused] = useState(false)
@@ -65,7 +66,7 @@ const ChatRoom = () => {
         <>
             {
                 settingDisplay === true ? 
-                <Settings/> : null
+                <Settings setSettingsDisplay={setSettingsDisplay} /> : null
             }
             <div className="chatroom-page">
                 <div className="sidenav">
@@ -77,12 +78,13 @@ const ChatRoom = () => {
                     </div>
                     <div className="newchat-search">
                         <div id="newChat" className="newchat" onClick={(e)=> {
+                            ref(newChat)
                             setCurrentChat("newChat")
                         }}>
                             <div className="newchat-image"><img src={require("./Assets/icons8-add-48.png")} alt="plus sign"/></div>
                             <div  className="newchat-text">New Chat</div>
                         </div>
-                        <div id="search-btn"  className="search-icon">
+                        <div id="search-btn" ref={searchBtn} className="search-icon">
                             <div id="iconInput" className="icon-input"><input type={"text"} placeholder="Search.."/></div>
                             <div onClick={expand} className="icon-btns">
                                 <div className="icon-search"><FontAwesomeIcon icon={faMagnifyingGlass} /></div>
