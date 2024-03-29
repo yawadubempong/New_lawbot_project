@@ -17,7 +17,7 @@
     display: flex;
     background: #fff;
     width: 600px;
-    height: fit-content;
+    height: 370px;
     border-radius: 10px;
     padding: 20px;
 }
@@ -29,6 +29,7 @@
 .leftside h4 {
     font-size: 1em;
     margin-bottom: 15px;
+    color: #242424;
 }
 
 .leftside li{
@@ -37,20 +38,25 @@
     font-size: 0.9em;
     margin-bottom: 8px;
     cursor: pointer;
-    padding: 5px;
+    padding: 10px;
     border-right: 2px solid transparent;
+}
+
+.leftside li:nth-child(4) {
+    color: red;
 }
 
 .leftside li:hover {
     width: 100%;
-    border-right: 2px solid #FF3D00;
-    background: linear-gradient(to right, #dfdfdf00, #ff521e85);
+    border-right: 2px solid #00c0da;
+    background: linear-gradient(to right, #dfdfdf00, #0fe3ff85);
 }
 
 .settings-vline {
-    background: rgb(99, 99, 99);
-    height: 220px;
+    background: rgb(189, 189, 189);
+    height: 100%;
     width: 1px;
+    margin-right: 20px;
 }
 
 
@@ -78,6 +84,7 @@
 }
 
 .change-button button {
+    cursor: pointer;
     margin-top: 10px;
     font-size: 0.8em;
     width: 100px;
@@ -88,4 +95,114 @@
     border-radius: 5px;
     outline: none;
     color: rgb(36, 36, 255);
+    transition: 0.3s;
+}
+
+.change-button button:hover {
+    background: #6a56e9;
+    color: #fff;
+}
+
+.account-details input {
+    width: 250px;
+    height: 34px;
+    border: none;
+    outline-color: #CBCAD7;
+    border: 1px solid rgb(177, 177, 177);
+    border-radius: 8px;
+    padding: 0 10px 0 10px;
+    margin-top: 3px;
+}
+
+.account-details p {
+    font-size: 0.77em;
+    color: rgb(143, 143, 143);
+    margin-top: 12px;
+}
+
+.save-changes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    width: fit-content;
+    margin-top: 20px;
+    padding:  10px 10px 10px 10px;
+    border-radius: 10px;
+    background: #ffb19a;
+    color: #fff;
+    transition: 0.3s ease-out;
+    cursor: pointer;
+}
+
+.preference p {
+    font-weight: 500;
+    font-size: 1em;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #585858;
+}
+
+.preference select {
+    cursor: pointer;
+    color: #777777;
+    width: 200px;
+    height: 30px;
+    font-size: 0.9em;
+    outline-color: #CBCAD7;
+}
+
+.log-out {
+    margin-top: 10px;
+    height: 100%;
+}
+
+.log-out p {
+    font-size: 0.9em;
+    color: rgb(143, 143, 143);
+    margin-top: 12px;
+}
+
+.log-out-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    width: fit-content;
+    margin-top: 20px;
+    padding:  10px 10px 10px 10px;
+    border-radius: 10px;
+    background: #ff2323;
+    color: #fff;
+    cursor: pointer;
+}
+
+.change-password {
+    margin-top: 20px;
+}
+
+.change-password input {
+    width: 250px;
+    height: 34px;
+    border: none;
+    outline-color: #CBCAD7;
+    border: 1px solid rgb(177, 177, 177);
+    border-radius: 8px;
+    padding: 0 10px 0 10px;
+    margin-top: 3px;
+}
+
+.change-password p {
+    font-size: 0.77em;
+    color: rgb(143, 143, 143);
+    margin-top: 12px;
+}
+
+.close-icon {
+    color: #585858;
+    font-size: 1.3em;
+    cursor: pointer;
+    position: relative;
+    left: 550px;
+    top: -10px;
 }
