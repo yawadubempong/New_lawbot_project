@@ -23,7 +23,6 @@ const CreateAccountPage = () => {
   // user email and password are stored in the state below(use userCred.userEmail and userCred.userPassword to call it out)
   const {
     register,
-    handleSubmit,
     formState: { errors },
     control,
     setValue,
@@ -58,6 +57,9 @@ const CreateAccountPage = () => {
 
   setValue("csrfmiddlewaretoken", csrfToken);
 
+  //Google sign up class requirement 
+  const googleClasses = ["google-signup", "g_id_signin"].join(' ');
+
   return (
     <>
       {preloader === true ? (
@@ -83,16 +85,33 @@ const CreateAccountPage = () => {
             <Form
                 action="/signup/"
                 control={control}
+                onSubmit={async ({ formData}) => {
+                  await fetch("/signup/", {
+                    method: "post",
+                    body: formData,
+                  }).then(response => {
+                    // Handle the response
+                    if (response.redirected) {
+                      window.location.href = response.url;
+                  }
+                  })
+                  .catch(error => {
+                    // Handle errors
+                  });
+                }}
               >
                 <input type="hidden" {...register("csrfmiddlewaretoken")} />
                 <div className="user-email">
-                <div className="g_id_signin"
-                      data-type="standard"
-                      data-size="large"
-                      data-theme="outline"
-                      data-text="sign_in_with"
-                      data-shape="rectangular"
-                      data-logo_alignment="left">
+                  <div className={ googleClasses }>
+                    <div className="google-icon">
+                      <img
+                        src={require("./Assets/icons8-google-144.png")}
+                        alt="Google Icon"
+                      />
+                    </div>
+                    <div className="google-signup-text">
+                      <p>Continue with Google</p>
+                    </div>
                   </div>
                   <div className="linebreak">
                     <div className="line1"></div>
