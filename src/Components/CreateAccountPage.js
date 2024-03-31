@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Form, useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import GoogleSignIn from "./GoogleSignIn";
 
 // Usage
 //Getting csrftoken
@@ -57,8 +58,8 @@ const CreateAccountPage = () => {
 
   setValue("csrfmiddlewaretoken", csrfToken);
 
-  //Google sign up class requirement 
-  const googleClasses = ["google-signup", "g_id_signin"].join(' ');
+  //Google sign up class requirement
+  const googleClasses = ["google-signup", "g_id_signin"].join(" ");
 
   return (
     <>
@@ -82,37 +83,31 @@ const CreateAccountPage = () => {
               </a>
             </p>
             <div className="user-email-password">
-            <Form
+              <Form
                 action="/signup/"
                 control={control}
-                onSubmit={async ({ formData}) => {
+                onSubmit={async ({ formData }) => {
+                  formData = new URLSearchParams(JSON.stringify(formData));
                   await fetch("/signup/", {
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                    },
                     method: "post",
+                    redirect: "manual",
                     body: formData,
-                  }).then(response => {
-                    // Handle the response
-                    if (response.redirected) {
-                      window.location.href = response.url;
-                  }
                   })
-                  .catch(error => {
-                    // Handle errors
-                  });
+                    .then((response) => {
+                      // Handle the response
+                      console.log(response.url);
+                    })
+                    .catch((error) => {
+                      // Handle errors
+                    });
                 }}
               >
                 <input type="hidden" {...register("csrfmiddlewaretoken")} />
                 <div className="user-email">
-                  <div className={ googleClasses }>
-                    <div className="google-icon">
-                      <img
-                        src={require("./Assets/icons8-google-144.png")}
-                        alt="Google Icon"
-                      />
-                    </div>
-                    <div className="google-signup-text">
-                      <p>Continue with Google</p>
-                    </div>
-                  </div>
+                  <GoogleSignIn />
                   <div className="linebreak">
                     <div className="line1"></div>
                     <div className="or">Or</div>

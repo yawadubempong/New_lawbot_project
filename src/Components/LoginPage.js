@@ -2,6 +2,7 @@ import "./CSS/LoginPage.css";
 import { Form, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import GoogleSignIn from "./GoogleSignIn";
 
 const csrfToken = document.getElementById("csrf_token_input").value;
 
@@ -25,25 +26,28 @@ const LoginPage = () => {
   setValue("csrfmiddlewaretoken", csrfToken);
 
   //Google sign up class requirement
-  const googleClasses = ["google-login", "g_id_signin"].join(" ");
+  const googleClasses = ["google-login"].join(" ");
 
   return (
     <>
       <div className="login-page">
         <div className="left-form">
           <Form
-            action="/signup/"
+            action="/login/"
             control={control}
             onSubmit={async ({ formData }) => {
-              await fetch("/signup/", {
+              formData = new URLSearchParams(JSON.stringify(formData));
+              await fetch("/login/", {
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
                 method: "post",
+                redirect: "manual",
                 body: formData,
               })
                 .then((response) => {
                   // Handle the response
-                  if (response.redirected) {
-                    window.location.href = response.url;
-                  }
+                  console.log(response.url);
                 })
                 .catch((error) => {
                   // Handle errors
@@ -56,7 +60,7 @@ const LoginPage = () => {
               <h3>Law Chatbot</h3>
             </div>
             <div className="login-inputs">
-            <input type="hidden" {...register("csrfmiddlewaretoken")} />
+              <input type="hidden" {...register("csrfmiddlewaretoken")} />
               <div className="inputs">
                 <p>Email Address</p>
                 <input
@@ -67,7 +71,7 @@ const LoginPage = () => {
                 />
                 <p>Password</p>
                 <input
-                  type="text"
+                  type="password"
                   {...register("password")}
                   required
                   placeholder="Enter your password"
@@ -86,17 +90,7 @@ const LoginPage = () => {
               <div className="or">Or</div>
               <div className="line2"></div>
             </div>
-            <div className={ googleClasses }>
-              <div className="google-icon">
-                <img
-                  src={require("./Assets/icons8-google-144.png")}
-                  alt="Google Icon"
-                />
-              </div>
-              <div className="google-login-text">
-                <p>Login with Google</p>
-              </div>
-            </div>
+            <GoogleSignIn />
             <div className="signup-link">
               <p>
                 Don't have an account?{" "}
