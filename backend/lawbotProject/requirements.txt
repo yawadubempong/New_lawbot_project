@@ -1,0 +1,13 @@
+Django
+django-cors-headers
+djangorestframework
+firebase-admin
+requests
+python-social-auth
+social-auth-app-django
+social-auth-core
+openai
+python-decouple
+pyrebase4
+whitenoise
+drf-yasg
