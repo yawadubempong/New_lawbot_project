@@ -36,7 +36,7 @@ const ChatRoom = () => {
   const [messages, setMessages] = useState([]);
   const [settingDisplay, setSettingsDisplay] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [send, setSend] = useState(false);
+  const [startChat, setStartChat] = useState(false);
   const expand = () => {
     newChat.classList.toggle("collapse");
     searchBtn.classList.toggle("expand");
@@ -79,10 +79,10 @@ const ChatRoom = () => {
     });
   }, []);
 
-  /*const handleSend = async (event) => {
+  const handleSend = async (event) => {
     try {
       event.preventDefault();
-  
+
       // Validate if the inputState is not empty
       if (inputState.trim() !== "") {
         const url = "/messages/";
@@ -91,29 +91,28 @@ const ChatRoom = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ "message": String(inputState) }),
+          body: JSON.stringify({ message: String(inputState) }),
         };
-        
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { message : inputState }
-        ]);
-        console.log(messages)
-        
+
+        console.log(messages);
+
         const response = await fetch(url, options);
-        const data = await  response.json();
+        const data = await response.json();
         // Check if the response is successful
-      if (response.ok) {
-        // Append the new message to the messages array
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { message : inputState }
-        ]);
-        console.log("Message sent successfully!");
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          data.message
-        ]);
+        if (response.ok) {
+          // Append the new message to the messages array
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              message: String(inputState),
+              authur: "User",
+              like: false,
+              dislike: false,
+            },
+          ]);
+          console.log("Message sent successfully!");
+          setMessages((prevMessages) => [...prevMessages, data.message]);
+          setStartChat(false);
           setInputState("");
         } else {
           console.error("Error sending message:", response.statusText);
@@ -123,9 +122,8 @@ const ChatRoom = () => {
       console.error("Error sending message:", error);
     }
   };
-  */
 
-  useEffect(() => {
+  /*useEffect(() => {
     const submit = async () => {
       try {
         // Validate if the inputState is not empty
@@ -169,6 +167,7 @@ const ChatRoom = () => {
     };
     submit();
   }, [send]);
+  */
 
   function resizeTextArea() {
     if (!textAreaRef.current) {
@@ -198,9 +197,9 @@ const ChatRoom = () => {
             <div
               id="newChat"
               className="newchat"
-              onClick={(e) => {
-                ref(newChat);
-                setCurrentChat("newChat");
+              ref={newChat}
+              onClick={() => {
+                setStartChat(true);
               }}
             >
               <div className="newchat-image">
@@ -287,6 +286,14 @@ const ChatRoom = () => {
                 setMessages={setMessages}
               />
             )}
+            {startChat && (
+              <NewChat
+                messages={messages}
+                chatData={chatData}
+                setChatData={setChatData}
+                setMessages={setMessages}
+              />
+            )}
           </div>
           <div className="textbox">
             <div className="img-textbox">
@@ -322,9 +329,7 @@ const ChatRoom = () => {
               {/* <div className="textbox-input"><div contentEditable="true" data-autoresize  id="txt" placeholder="What's in your mind?" onChange={handleChange}></div></div> */}
               <img
                 className="send-icon"
-                onClick={() => {
-                  setSend(true);
-                }}
+                onClick={handleSend}
                 src={require("./Assets/icon1.png")}
                 alt="paper plane"
               />

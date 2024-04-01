@@ -16,7 +16,7 @@ from django.forms.models import model_to_dict
 #Open AI integration 
 from openai import OpenAI
 
-client = OpenAI()
+
 
 
 # Create your views here.
@@ -100,12 +100,16 @@ class GetLatestChat(View):
 
 @method_decorator([login_required, csrf_exempt], name='dispatch') 
 class GetChat(View):
-    def post(self,request):
+    def get(self,request):
         try:
             json_data = json.loads(request.body)
-            request.session['chat_id'] = json_data.get('chat_id')
-            messages = list(Messages.objects.filter(chat_id=json_data.get('chat_id')).order_by("-created_at").values("message","authur","like","dislike"))
-            return JsonResponse({'messages': messages})
+            request.session['chat_id'] = json_data.get('id')
+            chat_id = request.session.get('chat_id')
+            messages = list(Messages.objects.filter(chat_id=Chats.objects.get(pk=chat_id)).order_by("-created_at").values("message","authur","like","dislike"))
+            Chats.objects.filter(pk=chat_id).update(last_modified=timezone.now())
+            chats = list(Chats.objects.filter(user_id=request.user).order_by( "last_modified" ).values("id","name"))
+
+            return JsonResponse({'messages': messages, 'chats': chats})
         
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': 'Could not retrieve that chat'}, status=400)

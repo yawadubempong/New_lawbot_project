@@ -38,7 +38,7 @@ const NewChat = ({ setChatData }, { setMessages }) => {
         setChatData((prevChatdata) => [...prevChatdata, data.chats]);
       }
     });
-  }, [setChatData]);
+  }, []);
 
   return (
     <>
