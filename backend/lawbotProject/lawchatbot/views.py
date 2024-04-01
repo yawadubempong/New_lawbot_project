@@ -16,7 +16,7 @@ from django.forms.models import model_to_dict
 #Open AI integration 
 from openai import OpenAI
 
-client = OpenAI(api_key="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")
+client = OpenAI()
 
 
 # Create your views here.
@@ -114,7 +114,7 @@ class GetChat(View):
 @method_decorator([login_required, csrf_exempt], name='dispatch')
 class Message(View):
     def post(self, request):
-        #try:
+        try:
             message_content = json.loads(request.body)["message"]
             print(message_content)
             if not message_content:
@@ -135,11 +135,11 @@ class Message(View):
                         ]
             )
             message = Messages.objects.create(message=message_content, authur="User", chat_id=Chats.objects.get(pk=chat_id),user_id=request.user)
-            message.save()
             message = str(completion.choices[0].message.content)
             reply = Messages.objects.create(message=message, authur="LAWBOT", chat_id=Chats.objects.get(pk=chat_id),user_id=request.user).pk
-            reply = list(Messages.objects.filter(pk=reply).values('message', 'authur', 'like', 'dislike'))
+            reply = list(Messages.objects.filter(pk=reply).values('message', 'authur', 'like', 'dislike'))[0]
+            Chats.objects.filter(pk=chat_id).update(last_modified=timezone.now())
 
-            return JsonResponse({'message': reply})
-        #except Exception as e:
+            return JsonResponse(reply)
+        except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)

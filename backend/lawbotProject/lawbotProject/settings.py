@@ -11,19 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import firebase_admin, os
-from firebase_admin import credentials
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-#Firebase confiq
-# Path to your service account JSON file
-SERVICE_ACCOUNT_FILE = 'C:/Users/DELL/Downloads/lawtest-b746b-firebase-adminsdk-teepl-2c783a1f5d.json'
-
-# Initialize Firebase Admin SDK
-cred = credentials.Certificate(SERVICE_ACCOUNT_FILE)
-firebase_admin.initialize_app(cred)
 
 
 # Quick-start development settings - unsuitable for production
