@@ -1,5 +1,5 @@
 from django.urls import path,include
-from .views import HomeView, SignUp, LogIn, Chat, Message, Chatroom, GetLatestChat, GetChat, LogOut
+from .views import HomeView, SignUp, LogIn, Chat, Message, Chatroom, GetLatestChat, GetChat, LogOut, Authenticated
 
 #Absolute path would look like "http://127.0.0.1:8000/chatbot/social-auth" for sign in with google href for the 
 #component
@@ -22,6 +22,8 @@ urlpatterns = [
     path("latestchat/", GetLatestChat.as_view(), name="loadlatestchat"),
     #path to load a chat
     path("loadchat/", GetChat.as_view(), name="loadchat"),
+    #Check auth status
+    path('loggedin/' , Authenticated.as_view(), name="isAuthenticated")
 ]
 
 

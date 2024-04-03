@@ -76,6 +76,11 @@ const ChatRoom = () => {
         setChatData(data.chats);
         setMessages(data.messages);
       }
+      if (messages.length >= 0 || chatData.length >= 0) {
+        setStartChat(false);
+      }else {
+        setStartChat(true)
+      }
     });
   }, []);
 
@@ -108,10 +113,10 @@ const ChatRoom = () => {
               authur: "User",
               like: false,
               dislike: false,
-            },
+            }
           ]);
           console.log("Message sent successfully!");
-          setMessages((prevMessages) => [...prevMessages, data.message]);
+          setMessages((prevMessages) => [...prevMessages, data]);
           setStartChat(false);
           setInputState("");
         } else {
@@ -122,6 +127,40 @@ const ChatRoom = () => {
       console.error("Error sending message:", error);
     }
   };
+
+  const handleAddChatOnServer = async () => {
+    try {
+      // Send POST request to the /chat endpoint
+      const url = "/chat/";
+      const options = {
+        method: "POST",
+      };
+
+      const response = await fetch(url, options);
+
+      // Check if the response is successful
+      if (!response.ok) {
+        console.error("Error sending message to server:", response.statusText);
+      } else {
+        const data = response.json();
+        return data;
+      }
+    } catch (error) {
+      console.error("Error sending message to server:", error);
+    }
+  };
+
+  const startNewChat = () => {
+    handleAddChatOnServer().then((data) => {
+      if (data) {
+        // Assuming chatData is the state variable to store the chat data
+        setChatData(data.chats);
+        setMessages(data.messages);
+        setStartChat(true);
+      }
+    });
+  }
+
 
   /*useEffect(() => {
     const submit = async () => {
@@ -198,9 +237,7 @@ const ChatRoom = () => {
               id="newChat"
               className="newchat"
               ref={newChat}
-              onClick={() => {
-                setStartChat(true);
-              }}
+              onClick={startNewChat}
             >
               <div className="newchat-image">
                 <img
@@ -271,7 +308,7 @@ const ChatRoom = () => {
         </div>
         <div className="chatroom">
           <div className="chatroom-textarea">
-            {messages.length > 0 || chatData.length > 0 ? (
+            { !startChat ? (
               <UserChat
                 messages={messages}
                 chatData={chatData}
@@ -279,14 +316,6 @@ const ChatRoom = () => {
                 setMessages={setMessages}
               />
             ) : (
-              <NewChat
-                messages={messages}
-                chatData={chatData}
-                setChatData={setChatData}
-                setMessages={setMessages}
-              />
-            )}
-            {startChat && (
               <NewChat
                 messages={messages}
                 chatData={chatData}

@@ -2,9 +2,8 @@ import "./CSS/LoginPage.css";
 import { Form, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import GoogleSignIn from "./GoogleSignIn";
+import { useEffect } from "react";
 
-const csrfToken = document.getElementById("csrf_token_input").value;
 
 const LoginPage = () => {
   const schema = yup.object().shape({
@@ -17,42 +16,70 @@ const LoginPage = () => {
   const {
     register,
     formState: { errors },
-    control,
-    setValue,
+    handleSubmit,
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      login: "",
+      password:"",
+      csrfmiddlewaretoken: document.getElementById("csrf_token_input").value
+    }
   });
 
-  setValue("csrfmiddlewaretoken", csrfToken);
 
-  //Google sign up class requirement
-  const googleClasses = ["google-login"].join(" ");
+  const loginStatus = async () => {
+    try {
+      // Get login status
+      const url = "/loggedin/";
+      const options = {
+        method: "GET",
+      };
+
+      const response = await fetch(url, options);
+
+      // Check if the response is successful
+      if (!response.ok) {
+        console.error("Error sending message to server:", response.statusText);
+      } else {
+        const data = response.json();
+        if (data.loggedIn == true) {
+          window.href = "/chatroom/"
+        }
+      }
+
+    } catch (error) {
+      console.error("Error sending message to server:", error);
+    }
+  };
+
+  const onSubmit = async (data) => {
+    console.log(data)
+    const formData = new URLSearchParams();
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+    console.log(formData);
+    await fetch("/login/", {
+      method: "post",
+      body: formData,
+    })
+      .then((response) => {
+        // Handle the response
+        if (response.ok) {
+          console.log(response.url);
+          loginStatus();
+      }})
+      .catch((error) => {
+        // Handle errors
+      });
+  }
 
   return (
     <>
       <div className="login-page">
         <div className="left-form">
-          <Form
-            action="/login/"
-            control={control}
-            onSubmit={async ({ formData }) => {
-              formData = new URLSearchParams(JSON.stringify(formData));
-              await fetch("/login/", {
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-                method: "post",
-                redirect: "manual",
-                body: formData,
-              })
-                .then((response) => {
-                  // Handle the response
-                  console.log(response.url);
-                })
-                .catch((error) => {
-                  // Handle errors
-                });
-            }}
+          <form
+            onSubmit={handleSubmit(onSubmit)}
             className="login-form"
           >
             <div className="logo-title">
@@ -64,7 +91,7 @@ const LoginPage = () => {
               <div className="inputs">
                 <p>Email Address</p>
                 <input
-                  type="text"
+                  type="email"
                   {...register("login")}
                   required
                   placeholder="Enter your email address"
@@ -90,7 +117,17 @@ const LoginPage = () => {
               <div className="or">Or</div>
               <div className="line2"></div>
             </div>
-            <GoogleSignIn />
+            <div className="google-login" onClick={() => (document.getElementById('Googlelogin').click())}>
+              <div className="google-icon">
+                <img
+                  src={require("./Assets/icons8-google-144.png")}
+                  alt="Google Icon"
+                />
+              </div>
+              <div className="google-login-text">
+                <p>Login with Google</p>
+              </div>
+            </div>
             <div className="signup-link">
               <p>
                 Don't have an account?{" "}
@@ -99,7 +136,7 @@ const LoginPage = () => {
                 </a>
               </p>
             </div>
-          </Form>
+          </form>
         </div>
         <div className="right-image">
           <img src={require("./Assets/Image.png")} alt="" />

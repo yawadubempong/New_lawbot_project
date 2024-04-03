@@ -11,12 +11,11 @@ from . models import User, Chats, Messages
 from allauth.account.views import LoginView as allLogin 
 from allauth.account.views import LogoutView as allLogout
 from allauth.account.views import SignupView as allSignup
-from django.forms.models import model_to_dict
 
 #Open AI integration 
 from openai import OpenAI
 
-
+client = OpenAI()
 
 
 # Create your views here.
@@ -59,14 +58,19 @@ class Chat(View):
         # Create a new chat object and save it to the database
         chat = Chats.objects.create(name="New Chat", user_id=request.user)
         
+        #Update chat to be the last modified 
+        Chats.objects.filter(pk=chat.pk).update(last_modified=timezone.now())
+        
         # Retrieve the chat object from the database as a dictionary
-        chats = list(Chats.objects.filter(pk=chat.pk).values("id", "name"))
+        chats = list(Chats.objects.filter(user_id=request.user).order_by( "-last_modified" ).values("id","name"))
+        messages = list(Messages.objects.filter(chat_id=chat.pk).order_by("created_at").values('message', 'authur', 'like', 'dislike'))
         
         # Store the chat ID in the session
         request.session["chat_id"] = chat.pk
+        print(request.session["chat_id"])
         
         # Return the serialized chat data as a JSON response
-        return JsonResponse({'chats': chats})
+        return JsonResponse({'messages': messages, 'chats': chats})
     
     
 @method_decorator([login_required, csrf_exempt], name='dispatch') 
@@ -84,14 +88,15 @@ class GetLatestChat(View):
         # Add a chat to the session or create a new chat if one does not exist
         if latest_chat:
             request.session["chat_id"] = latest_chat.pk 
+            print(request.session["chat_id"])
         else:
             chat = Chats.objects.create(name="New Chat", user_id=request.user)
-            chat.save()
             request.session["chat_id"] = chat.pk
+            print(request.session["chat_id"])
 
         # Filter chats and messages based on user_id
         messages = list(Messages.objects.filter(chat_id=latest_chat).order_by("created_at").values('message', 'authur', 'like', 'dislike'))
-        chats = list(Chats.objects.filter(user_id=request.user).order_by( "last_modified" ).values("id","name"))
+        chats = list(Chats.objects.filter(user_id=request.user).order_by( "-last_modified" ).values("id","name"))
 
 
         # Return JSON response
@@ -106,8 +111,8 @@ class GetChat(View):
             request.session['chat_id'] = json_data.get('id')
             chat_id = request.session.get('chat_id')
             messages = list(Messages.objects.filter(chat_id=Chats.objects.get(pk=chat_id)).order_by("-created_at").values("message","authur","like","dislike"))
-            Chats.objects.filter(pk=chat_id).update(last_modified=timezone.now())
-            chats = list(Chats.objects.filter(user_id=request.user).order_by( "last_modified" ).values("id","name"))
+            Chats.objects.get(pk=chat_id).last_modified = timezone.now()
+            chats = list(Chats.objects.filter(user_id=request.user).order_by( "-last_modified" ).values("id","name"))
 
             return JsonResponse({'messages': messages, 'chats': chats})
         
@@ -142,8 +147,16 @@ class Message(View):
             message = str(completion.choices[0].message.content)
             reply = Messages.objects.create(message=message, authur="LAWBOT", chat_id=Chats.objects.get(pk=chat_id),user_id=request.user).pk
             reply = list(Messages.objects.filter(pk=reply).values('message', 'authur', 'like', 'dislike'))[0]
-            Chats.objects.filter(pk=chat_id).update(last_modified=timezone.now())
+            Chats.objects.get(pk=chat_id).last_modified = timezone.now()
 
             return JsonResponse(reply)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+
+
+@method_decorator([login_required, csrf_exempt], name='dispatch')        
+class Authenticated(View):
+    def get(self, request):
+        if User.is_authenticated:
+            return  JsonResponse({'loggedIn': True})
+        

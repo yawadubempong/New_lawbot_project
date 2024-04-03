@@ -8,38 +8,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 
-const NewChat = ({ setChatData }, { setMessages }) => {
-  const handleAddChatOnServer = async () => {
-    try {
-      // Send POST request to the /chat endpoint
-      const url = "/chat/";
-      const options = {
-        method: "POST",
-      };
-
-      const response = await fetch(url, options);
-
-      // Check if the response is successful
-      if (!response.ok) {
-        console.error("Error sending message to server:", response.statusText);
-      } else {
-        const data = response.json();
-        return data;
-      }
-    } catch (error) {
-      console.error("Error sending message to server:", error);
-    }
-  };
-
-  useEffect(() => {
-    handleAddChatOnServer().then((data) => {
-      if (data) {
-        // Assuming chatData is the state variable to store the chat data
-        setChatData((prevChatdata) => [...prevChatdata, data.chats]);
-      }
-    });
-  }, []);
-
+const NewChat = () => {
+ 
   return (
     <>
       <div className="new-chat-room">

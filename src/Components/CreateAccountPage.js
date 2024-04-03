@@ -3,11 +3,6 @@ import { useEffect, useState } from "react";
 import { Form, useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import GoogleSignIn from "./GoogleSignIn";
-
-// Usage
-//Getting csrftoken
-const csrfToken = document.getElementById("csrf_token_input").value;
 
 const CreateAccountPage = () => {
   const schema = yup.object().shape({
@@ -26,9 +21,10 @@ const CreateAccountPage = () => {
     register,
     formState: { errors },
     control,
-    setValue,
+    handleSubmit,
   } = useForm({
     resolver: yupResolver(schema),
+    
   });
   const name = useWatch({ control, name: "name" });
   const email = useWatch({ control, name: "email" });
@@ -48,6 +44,7 @@ const CreateAccountPage = () => {
     document.getElementById("signup-btn").style.display = "flex";
   };
 
+
   useEffect(() => {
     if (name !== "" && email !== "") {
       setSlide("slide");
@@ -56,10 +53,51 @@ const CreateAccountPage = () => {
     }
   }, [name, email]);
 
-  setValue("csrfmiddlewaretoken", csrfToken);
+  const loginStatus = async () => {
+    try {
+      // Send POST request to the /chat endpoint
+      const url = "/loggedin/";
+      const options = {
+        method: "GET",
+      };
 
-  //Google sign up class requirement
-  const googleClasses = ["google-signup", "g_id_signin"].join(" ");
+      const response = await fetch(url, options);
+
+      // Check if the response is successful
+      if (!response.ok) {
+        console.error("Error sending message to server:", response.statusText);
+      } else {
+        const data = response.json();
+        if (data.loggedIn == true) {
+          window.href = "/chatroom"
+        }
+      }
+
+    } catch (error) {
+      console.error("Error sending message to server:", error);
+    }
+  };
+
+  const onSubmit = async (data) => {
+    console.log(data);
+    const formData = new URLSearchParams();
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+    console.log(formData);
+    await fetch("/signup/", {
+      method: "post",
+      body: formData,
+    })
+      .then((response) => {
+        // Handle the response
+        console.log(response.url);
+        loginStatus();
+      })
+      .catch((error) => {
+        // Handle errors
+      });
+  };
 
   return (
     <>
@@ -83,31 +121,23 @@ const CreateAccountPage = () => {
               </a>
             </p>
             <div className="user-email-password">
-              <Form
-                action="/signup/"
+              <form
                 control={control}
-                onSubmit={async ({ formData }) => {
-                  formData = new URLSearchParams(JSON.stringify(formData));
-                  await fetch("/signup/", {
-                    headers: {
-                      "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    method: "post",
-                    redirect: "manual",
-                    body: formData,
-                  })
-                    .then((response) => {
-                      // Handle the response
-                      console.log(response.url);
-                    })
-                    .catch((error) => {
-                      // Handle errors
-                    });
-                }}
+                onSubmit={handleSubmit(onSubmit)}
               >
-                <input type="hidden" {...register("csrfmiddlewaretoken")} />
+                <input type="hidden" {...register("csrfmiddlewaretoken")} defaultValue={document.getElementById("csrf_token_input").value} />
                 <div className="user-email">
-                  <GoogleSignIn />
+                  <div className="google-signup" onClick={() => (document.getElementById('Googlelogin').click())}>
+                    <div className="google-icon">
+                      <img
+                        src={require("./Assets/icons8-google-144.png")}
+                        alt="Google Icon"
+                      />
+                    </div>
+                    <div className="google-signup-text">
+                      <p>Continue with Google</p>
+                    </div>
+                  </div>
                   <div className="linebreak">
                     <div className="line1"></div>
                     <div className="or">Or</div>
@@ -124,7 +154,7 @@ const CreateAccountPage = () => {
                     <p>
                       Your email<span> *</span>
                     </p>
-                    <input type="text" {...register("email")} />
+                    <input type="email" {...register("email")} />
                   </div>
                 </div>
                 <div id="user-password" className="user-password">
@@ -141,7 +171,7 @@ const CreateAccountPage = () => {
                 <button type={"submit"} id="signup-btn" className="signup-btn">
                   <p>Create an Account</p>
                 </button>
-              </Form>
+              </form>
             </div>
           </div>
         </div>

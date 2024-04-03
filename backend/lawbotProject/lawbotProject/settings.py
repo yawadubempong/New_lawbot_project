@@ -197,6 +197,8 @@ ACCOUNT_SIGNUP_REDIRECT_URL = "chatroom"
 ACCOUNT_LOGOUT_REDIRECT_URL ="chatroom"
 #Account logout on get 
 ACCOUNT_LOGOUT_ON_GET= True
+#Social Account Auto  Signup
+SOCIALACCOUNT_AUTO_SIGNUP = True
 
 SECURE_REFERRER_POLICY = 'origin'
 

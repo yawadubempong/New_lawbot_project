@@ -80,11 +80,11 @@ const Settings = ({setSettingsDisplay}) => {
                                     Save changes
                                 </div>
                             </div>: (settings === "log-out" ? 
-                            <div className="log-out">
+                            <div className="log-out"><a href="/logout">
                                 <p>Log out of your account</p>
                                 <div className="log-out-btn">
                                     Log Out
-                                </div>
+                                </div></a>
                             </div>: (settings === "change-password"?
                             <div className="change-password">
                                 <p>Old password</p>
