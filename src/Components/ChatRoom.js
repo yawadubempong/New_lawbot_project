@@ -181,6 +181,11 @@ const ChatRoom = () => {
         // Assuming chatData is the state variable to store the chat data
         setChatData(data.chats);
         setMessages(data.messages);
+        if (messages.length >= 0) {
+          setStartChat(false);
+        } else {
+          setStartChat(true);
+        }
       }
     });
   };

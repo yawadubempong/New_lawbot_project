@@ -2,7 +2,7 @@ import "./CSS/LoginPage.css";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect } from "react";
+import { useState } from "react";
 
 const LoginPage = () => {
   const schema = yup.object().shape({
@@ -26,6 +26,7 @@ const LoginPage = () => {
       csrfmiddlewaretoken: document.getElementById("csrf_token_input").value,
     },
   });
+  const [disabled, setdisabled] = useState(false)
 
   const login = async (data) => {
     try {
@@ -47,8 +48,9 @@ const LoginPage = () => {
   };
   };
 
-  const onSubmit = () => {
-      login().then((data) => {
+  const onSubmit = (info) => {
+    setdisabled(true);
+      login(info).then((data) => {
         if (data.success === false) {
           for (const key in data.errors) {
             setError(
@@ -60,9 +62,10 @@ const LoginPage = () => {
             console.log(errors);
           }
         } else if (data.success === true) {
-            window.href = "/chatroom/";
+            window.location.href = "/chatroom/";
           }
       });
+      setdisabled(false);
     }
 
   return (
@@ -103,7 +106,7 @@ const LoginPage = () => {
                 <input type={"checkbox"} required {...register("terms")} />
                 <div className="terms">I agree to terms & conditions</div>
               </div>
-              <button type={"submit"} className="login-btn">
+              <button type={"submit"} className="login-btn" disabled={disabled}>
                 <p>Login</p>
               </button>
             </div>

@@ -2,7 +2,7 @@ import "./CSS/Settings.css"
 import profile from "./Assets/Ellipse 517.png"
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { faBorderNone, faClose } from "@fortawesome/free-solid-svg-icons";
 
 const Settings = ({setSettingsDisplay}) => {
     const lastNameInput = useRef()
@@ -17,6 +17,8 @@ const Settings = ({setSettingsDisplay}) => {
             lastNameInput.current.style.backgroundColor = "#ffb19a"
         }
     }, [lastName])
+
+
     return (
         <>  
             <div className="Settings">
@@ -80,7 +82,7 @@ const Settings = ({setSettingsDisplay}) => {
                                     Save changes
                                 </div>
                             </div>: (settings === "log-out" ? 
-                            <div className="log-out"><a href="/logout">
+                            <div className="log-out"><a style={{textDecoration: 'none'}} href="/logout">
                                 <p>Log out of your account</p>
                                 <div className="log-out-btn">
                                     Log Out

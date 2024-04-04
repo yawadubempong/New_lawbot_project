@@ -43,6 +43,7 @@ const CreateAccountPage = () => {
     document.getElementById("continue").style.display = "none";
     document.getElementById("signup-btn").style.display = "flex";
   };
+  const [disabled, setdisabled] = useState(false)
 
   useEffect(() => {
     if (name !== "" && email !== "") {
@@ -72,8 +73,9 @@ const CreateAccountPage = () => {
   };
 }
 
-  const onSubmit = () => {
-      signup().then((data) => {
+  const onSubmit = (info) => {
+    setdisabled(true);
+      signup(info).then((data) => {
         if (data.success === false) {
           for (const key in data.errors) {
             setError(
@@ -85,9 +87,10 @@ const CreateAccountPage = () => {
             console.log(errors)
           }
         } else if (data.success === true) {
-            window.href = "/chatroom/";
-          }
+            window.location.href = "/chatroom/";
+          }    
       });
+      setdisabled(false);
     }
 
   
@@ -175,7 +178,7 @@ const CreateAccountPage = () => {
                   {errors.password2 && <p>{errors.password2.message}</p>}
                   <input type="password" {...register("password2")} />
                 </div>
-                <button type={"submit"} id="signup-btn" className="signup-btn">
+                <button type={"submit"} id="signup-btn" className="signup-btn" disabled={disabled}>
                   <p>Create an Account</p>
                 </button>
               </form>

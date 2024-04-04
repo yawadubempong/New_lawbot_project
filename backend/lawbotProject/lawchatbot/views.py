@@ -11,8 +11,7 @@ from . models import User, Chats, Messages
 from allauth.account.views import LoginView as allLogin 
 from allauth.account.views import LogoutView as allLogout
 from allauth.account.views import SignupView as allSignup
-from .forms import CustomSignupForm
-from allauth.account.forms import LoginForm
+from . forms import CustomSignupForm
 
 
 #Open AI integration 
@@ -136,7 +135,7 @@ class GetChat(View):
             json_data = json.loads(request.body)
             request.session['chat_id'] = json_data.get('id')
             chat_id = request.session.get('chat_id')
-            messages = list(Messages.objects.filter(chat_id=Chats.objects.get(pk=chat_id)).order_by("-created_at").values("message","authur","like","dislike"))
+            messages = list(Messages.objects.filter(chat_id=Chats.objects.get(pk=chat_id)).order_by("created_at").values("message","authur","like","dislike"))
             Chats.objects.get(pk=chat_id).last_modified = timezone.now()
             chats = list(Chats.objects.filter(user_id=request.user).order_by( "-last_modified" ).values("id","name"))
 
@@ -158,9 +157,6 @@ class Message(View):
             chat_id = request.session.get('chat_id')
             Chats.objects.filter(pk=chat_id).update(last_modified=timezone.now())
             new_chat = Chats.objects.filter(name="New Chat", pk=chat_id)
-            if new_chat.exists():
-                new_chat.update(name=message_content)
-            
             # Add your completion generation code here
             completion = client.chat.completions.create(
                             model="ft:gpt-3.5-turbo-0613:tech-day::96lGas0P",
@@ -173,6 +169,8 @@ class Message(View):
             message = str(completion.choices[0].message.content)
             reply = Messages.objects.create(message=message, authur="LAWBOT", chat_id=Chats.objects.get(pk=chat_id),user_id=request.user).pk
             reply = list(Messages.objects.filter(pk=reply).values('message', 'authur', 'like', 'dislike'))[0]
+            if new_chat.exists():
+                new_chat.update(name=message_content)
             Chats.objects.get(pk=chat_id).last_modified = timezone.now()
 
             return JsonResponse(reply)

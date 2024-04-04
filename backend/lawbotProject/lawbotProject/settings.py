@@ -177,6 +177,8 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "chatroom"
 
 LOGIN_URL = "login"
 
+SIGNUP_URL = "signup"
+
 #Allauth configurations 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # Use email for authentication
@@ -200,5 +202,5 @@ ACCOUNT_LOGOUT_ON_GET = True
 #Social Account Auto  Signup
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
-SECURE_REFERRER_POLICY = 'origin'
+SOCIALACCOUNT_EMAIL_REQUIRED =  False
 
