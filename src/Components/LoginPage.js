@@ -1,9 +1,8 @@
 import "./CSS/LoginPage.css";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
-
 
 const LoginPage = () => {
   const schema = yup.object().shape({
@@ -16,44 +15,20 @@ const LoginPage = () => {
   const {
     register,
     formState: { errors },
+    setError,
+    control,
     handleSubmit,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       login: "",
-      password:"",
-      csrfmiddlewaretoken: document.getElementById("csrf_token_input").value
-    }
+      password: "",
+      csrfmiddlewaretoken: document.getElementById("csrf_token_input").value,
+    },
   });
 
-
-  const loginStatus = async () => {
-    try {
-      // Get login status
-      const url = "/loggedin/";
-      const options = {
-        method: "GET",
-      };
-
-      const response = await fetch(url, options);
-
-      // Check if the response is successful
-      if (!response.ok) {
-        console.error("Error sending message to server:", response.statusText);
-      } else {
-        const data = response.json();
-        if (data.loggedIn == true) {
-          window.href = "/chatroom/"
-        }
-      }
-
-    } catch (error) {
-      console.error("Error sending message to server:", error);
-    }
-  };
-
   const onSubmit = async (data) => {
-    console.log(data)
+    console.log(data);
     const formData = new URLSearchParams();
     for (const key in data) {
       formData.append(key, data[key]);
@@ -65,20 +40,32 @@ const LoginPage = () => {
     })
       .then((response) => {
         // Handle the response
+        data = response.json();
+        console.log(data);
         if (response.ok) {
-          console.log(response.url);
-          loginStatus();
-      }})
+          if (data.success === true) {
+            window.href = "/chatroom";
+          }
+        } else {
+          for (const key in data.errors) {
+            setError(String(key), {
+              type: "custom",
+              message: data.errors[key].join("****"),
+            });
+          }
+        }
+      })
       .catch((error) => {
         // Handle errors
       });
-  }
+  };
 
   return (
     <>
       <div className="login-page">
         <div className="left-form">
           <form
+            control={control}
             onSubmit={handleSubmit(onSubmit)}
             className="login-form"
           >
@@ -87,9 +74,11 @@ const LoginPage = () => {
               <h3>Law Chatbot</h3>
             </div>
             <div className="login-inputs">
+              {errors.__all__ && <p>{errors.__all__.message}</p>}
               <input type="hidden" {...register("csrfmiddlewaretoken")} />
               <div className="inputs">
                 <p>Email Address</p>
+                {errors.login && <p>{errors.login.message}</p>}
                 <input
                   type="email"
                   {...register("login")}
@@ -97,6 +86,7 @@ const LoginPage = () => {
                   placeholder="Enter your email address"
                 />
                 <p>Password</p>
+                {errors.password && <p>{errors.password.message}</p>}
                 <input
                   type="password"
                   {...register("password")}
@@ -117,7 +107,10 @@ const LoginPage = () => {
               <div className="or">Or</div>
               <div className="line2"></div>
             </div>
-            <div className="google-login" onClick={() => (document.getElementById('Googlelogin').click())}>
+            <div
+              className="google-login"
+              onClick={() => document.getElementById("Googlelogin").click()}
+            >
               <div className="google-icon">
                 <img
                   src={require("./Assets/icons8-google-144.png")}

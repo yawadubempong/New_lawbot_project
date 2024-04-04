@@ -4,19 +4,21 @@ from django.http import JsonResponse
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt 
-from django.contrib.auth.views import LoginView
+from django.contrib.auth import login , authenticate
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone   
 from . models import User, Chats, Messages
 from allauth.account.views import LoginView as allLogin 
 from allauth.account.views import LogoutView as allLogout
 from allauth.account.views import SignupView as allSignup
+from .forms import CustomSignupForm
+from allauth.account.forms import LoginForm
+
 
 #Open AI integration 
 from openai import OpenAI
 
 client = OpenAI()
-
 
 # Create your views here.
 class HomeView(View):
@@ -26,11 +28,25 @@ class HomeView(View):
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class SignUp(allSignup):
-    def get(self, request):
-        return render(request, "index.html")
+    template_name="index.html"
     
-class GoogleSignUp():
-    pass
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            # If the user is already logged in, redirect to home
+            return redirect('home')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form_class = CustomSignupForm
+        form = self.get_form(form_class)
+        if form.is_valid():
+            # Authenticate user
+            response = self.form_valid(form)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+    
+        
     
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')     
@@ -43,6 +59,16 @@ class LogIn(allLogin):
             # If the user is already logged in, redirect to home
             return redirect('home')
         return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if form.is_valid():
+            # Authenticate user
+            response = self.form_valid(form)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
             
             
 @method_decorator(ensure_csrf_cookie, name='dispatch')     
@@ -105,7 +131,7 @@ class GetLatestChat(View):
 
 @method_decorator([login_required, csrf_exempt], name='dispatch') 
 class GetChat(View):
-    def get(self,request):
+    def post(self,request):
         try:
             json_data = json.loads(request.body)
             request.session['chat_id'] = json_data.get('id')

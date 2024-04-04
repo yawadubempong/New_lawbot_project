@@ -73,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Chats(models.Model):
     name = models.TextField(blank=False, null=False)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,null=False)
-    last_modified = models.DateField(auto_now= True)
+    last_modified = models.DateTimeField(auto_now= True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 #Messages Model

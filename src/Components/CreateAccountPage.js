@@ -1,6 +1,6 @@
 import "./CSS/CreateAccountPage.css";
 import { useEffect, useState } from "react";
-import { Form, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -20,11 +20,11 @@ const CreateAccountPage = () => {
   const {
     register,
     formState: { errors },
+    setError,
     control,
     handleSubmit,
   } = useForm({
     resolver: yupResolver(schema),
-    
   });
   const name = useWatch({ control, name: "name" });
   const email = useWatch({ control, name: "email" });
@@ -44,7 +44,6 @@ const CreateAccountPage = () => {
     document.getElementById("signup-btn").style.display = "flex";
   };
 
-
   useEffect(() => {
     if (name !== "" && email !== "") {
       setSlide("slide");
@@ -52,31 +51,6 @@ const CreateAccountPage = () => {
       setSlide("none");
     }
   }, [name, email]);
-
-  const loginStatus = async () => {
-    try {
-      // Send POST request to the /chat endpoint
-      const url = "/loggedin/";
-      const options = {
-        method: "GET",
-      };
-
-      const response = await fetch(url, options);
-
-      // Check if the response is successful
-      if (!response.ok) {
-        console.error("Error sending message to server:", response.statusText);
-      } else {
-        const data = response.json();
-        if (data.loggedIn == true) {
-          window.href = "/chatroom"
-        }
-      }
-
-    } catch (error) {
-      console.error("Error sending message to server:", error);
-    }
-  };
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -91,8 +65,22 @@ const CreateAccountPage = () => {
     })
       .then((response) => {
         // Handle the response
-        console.log(response.url);
-        loginStatus();
+        data = response.json()
+        if (!response.ok) {
+          for (const key in data.errors) {
+            setError(
+              String(key),{
+                type: "custom",
+                message: data.errors[key].join('****')
+              }
+            )
+            console.log(errors)
+          }
+        } else {
+          if (data.success === true) {
+            window.href = "/chatroom";
+          }
+        }
       })
       .catch((error) => {
         // Handle errors
@@ -121,13 +109,21 @@ const CreateAccountPage = () => {
               </a>
             </p>
             <div className="user-email-password">
-              <form
-                control={control}
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <input type="hidden" {...register("csrfmiddlewaretoken")} defaultValue={document.getElementById("csrf_token_input").value} />
+              <form control={control} onSubmit={handleSubmit(onSubmit)}>
+                <input
+                  type="hidden"
+                  {...register("csrfmiddlewaretoken")}
+                  defaultValue={
+                    document.getElementById("csrf_token_input").value
+                  }
+                />
                 <div className="user-email">
-                  <div className="google-signup" onClick={() => (document.getElementById('Googlelogin').click())}>
+                  <div
+                    className="google-signup"
+                    onClick={() =>
+                      document.getElementById("Googlelogin").click()
+                    }
+                  >
                     <div className="google-icon">
                       <img
                         src={require("./Assets/icons8-google-144.png")}
@@ -145,15 +141,19 @@ const CreateAccountPage = () => {
                   </div>
                   <div id="user-email" className="email-input">
                     <h3>Enter your email address to create an account.</h3>
+                    {errors.__all__ && <p>{errors.__all__.message}</p>}
                     <p>
                       Firstname<span> *</span>
                     </p>
+                    {errors.name && <p>{errors.name.message}</p>}
                     <input type="text" {...register("name")} />
                     <p>Lastname</p>
+                    {errors.lastname && <p>{errors.lastname.message}</p>}
                     <input type="text" {...register("lastname")} />
                     <p>
                       Your email<span> *</span>
                     </p>
+                    {errors.email && <p>{errors.email.message}</p>}
                     <input type="email" {...register("email")} />
                   </div>
                 </div>
@@ -162,10 +162,12 @@ const CreateAccountPage = () => {
                   <p>
                     Password<span> *</span>
                   </p>
+                  {errors.password1 && <p>{errors.password1.message}</p>}
                   <input type="password" {...register("password1")} />
                   <p>
                     Confirm password<span> *</span>
                   </p>
+                  {errors.password2 && <p>{errors.password2.message}</p>}
                   <input type="password" {...register("password2")} />
                 </div>
                 <button type={"submit"} id="signup-btn" className="signup-btn">

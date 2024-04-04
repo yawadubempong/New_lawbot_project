@@ -69,6 +69,20 @@ const ChatRoom = () => {
     }
   };
 
+  const handleLoadChat = async (id) => {
+    try {
+      const response = await fetch("/loadchat/", {
+        method: "POST",
+        body: JSON.stringify({ id: id }),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching latest chat data:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     fetchLatestChatData().then((data) => {
       if (data) {
@@ -78,8 +92,8 @@ const ChatRoom = () => {
       }
       if (messages.length >= 0 || chatData.length >= 0) {
         setStartChat(false);
-      }else {
-        setStartChat(true)
+      } else {
+        setStartChat(true);
       }
     });
   }, []);
@@ -113,7 +127,7 @@ const ChatRoom = () => {
               authur: "User",
               like: false,
               dislike: false,
-            }
+            },
           ]);
           console.log("Message sent successfully!");
           setMessages((prevMessages) => [...prevMessages, data]);
@@ -159,8 +173,17 @@ const ChatRoom = () => {
         setStartChat(true);
       }
     });
-  }
+  };
 
+  const loadChat = (id) => {
+    handleLoadChat(id).then((data) => {
+      if (data) {
+        // Assuming chatData is the state variable to store the chat data
+        setChatData(data.chats);
+        setMessages(data.messages);
+      }
+    });
+  };
 
   /*useEffect(() => {
     const submit = async () => {
@@ -268,7 +291,13 @@ const ChatRoom = () => {
 
           <div className="prev-chat-nav">
             {chatData.map((chat) => (
-              <div className="chat" key={chat.id}>
+              <div
+                className="chat"
+                key={chat.id}
+                onClick={() => {
+                  loadChat(chat.id);
+                }}
+              >
                 <div className="chaticon-sentence">
                   <img
                     className="chatimg"
@@ -308,7 +337,7 @@ const ChatRoom = () => {
         </div>
         <div className="chatroom">
           <div className="chatroom-textarea">
-            { !startChat ? (
+            {!startChat ? (
               <UserChat
                 messages={messages}
                 chatData={chatData}
