@@ -90,7 +90,7 @@ const ChatRoom = () => {
         setChatData(data.chats);
         setMessages(data.messages);
       }
-      if (messages.length >= 0 || chatData.length >= 0) {
+      if (messages.length >= 0) {
         setStartChat(false);
       } else {
         setStartChat(true);
