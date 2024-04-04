@@ -27,38 +27,43 @@ const LoginPage = () => {
     },
   });
 
-  const onSubmit = async (data) => {
+  const login = async (data) => {
+    try {
     console.log(data);
     const formData = new URLSearchParams();
     for (const key in data) {
       formData.append(key, data[key]);
     }
     console.log(formData);
-    await fetch("/login/", {
+    const response = await fetch("/login/", {
       method: "post",
       body: formData,
-    })
-      .then((response) => {
-        // Handle the response
-        data = response.json();
-        console.log(data);
-        if (response.ok) {
-          if (data.success === true) {
-            window.href = "/chatroom";
-          }
-        } else {
-          for (const key in data.errors) {
-            setError(String(key), {
-              type: "custom",
-              message: data.errors[key].join("****"),
-            });
-          }
-        }
-      })
-      .catch((error) => {
-        // Handle errors
-      });
+    });
+  data = response.json()
+  return data;
+  }
+      catch (error) {
+        console.log(error)
   };
+  };
+
+  const onSubmit = () => {
+      login().then((data) => {
+        if (data.success === false) {
+          for (const key in data.errors) {
+            setError(
+              String(key),{
+                type: "custom",
+                message: data.errors[key].join('****')
+              }
+            )
+            console.log(errors);
+          }
+        } else if (data.success === true) {
+            window.href = "/chatroom/";
+          }
+      });
+    }
 
   return (
     <>

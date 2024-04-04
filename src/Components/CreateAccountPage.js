@@ -52,21 +52,29 @@ const CreateAccountPage = () => {
     }
   }, [name, email]);
 
-  const onSubmit = async (data) => {
+  const signup = async (data) => {
+    try {
     console.log(data);
     const formData = new URLSearchParams();
     for (const key in data) {
       formData.append(key, data[key]);
     }
     console.log(formData);
-    await fetch("/signup/", {
+    const response = await fetch("/signup/", {
       method: "post",
       body: formData,
-    })
-      .then((response) => {
-        // Handle the response
-        data = response.json()
-        if (!response.ok) {
+    });
+  data = response.json()
+  return data;
+  }
+      catch (error) {
+        console.log(error)
+  };
+}
+
+  const onSubmit = () => {
+      signup().then((data) => {
+        if (data.success === false) {
           for (const key in data.errors) {
             setError(
               String(key),{
@@ -76,16 +84,13 @@ const CreateAccountPage = () => {
             )
             console.log(errors)
           }
-        } else {
-          if (data.success === true) {
-            window.href = "/chatroom";
+        } else if (data.success === true) {
+            window.href = "/chatroom/";
           }
-        }
-      })
-      .catch((error) => {
-        // Handle errors
       });
-  };
+    }
+
+  
 
   return (
     <>
