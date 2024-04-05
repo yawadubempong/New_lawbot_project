@@ -18,3 +18,8 @@ class CustomSignupForm(AllauthSignupForm):
         user.lastname = self.cleaned_data['lastname']
         user.save()
         return user
+    
+class UserDetailsForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['name','lastname']

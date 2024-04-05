@@ -11,7 +11,9 @@ from . models import User, Chats, Messages
 from allauth.account.views import LoginView as allLogin 
 from allauth.account.views import LogoutView as allLogout
 from allauth.account.views import SignupView as allSignup
-from . forms import CustomSignupForm
+from allauth.account.views import PasswordSetView as setPassword
+from allauth.account.views import PasswordChangeView as changePassword
+from . forms import CustomSignupForm, UserDetailsForm
 
 
 #Open AI integration 
@@ -37,6 +39,36 @@ class SignUp(allSignup):
     
     def post(self, request, *args, **kwargs):
         form_class = CustomSignupForm
+        form = self.get_form(form_class)
+        if form.is_valid():
+            # Authenticate user
+            response = self.form_valid(form)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+        
+
+class ChangePassword(changePassword):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_usable_password():
+            # If the user does not have a passsword
+            return redirect('setpassword')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if form.is_valid():
+            # Authenticate user
+            response = self.form_valid(form)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+        
+        
+class SetPassword(setPassword):
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
         form = self.get_form(form_class)
         if form.is_valid():
             # Authenticate user
@@ -184,3 +216,19 @@ class Authenticated(View):
         if User.is_authenticated:
             return  JsonResponse({'loggedIn': True})
         
+
+@method_decorator([login_required, csrf_exempt], name='dispatch')            
+class UserDetails(View):
+    def get(self, request):
+        data = list(User.objects.filter(pk=request.user.id).values('name', 'lastname', 'email'))[0]
+        return JsonResponse(data)
+    
+    def post(self, request):
+        form_class = UserDetailsForm
+        form = UserDetailsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            #Save passed data
+            response = form.save(commit=True)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)

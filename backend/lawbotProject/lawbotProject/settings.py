@@ -147,7 +147,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Allow cross origin requests
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -159,6 +159,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         },
         'OAUTH_PKCE_ENABLED': True,
+        'EMAIL_AUTHENTICATION': True,
     }
 }
 
@@ -201,6 +202,4 @@ ACCOUNT_LOGOUT_REDIRECT_URL ="chatroom"
 ACCOUNT_LOGOUT_ON_GET = True
 #Social Account Auto  Signup
 SOCIALACCOUNT_AUTO_SIGNUP = True
-
-SOCIALACCOUNT_EMAIL_REQUIRED =  False
 
