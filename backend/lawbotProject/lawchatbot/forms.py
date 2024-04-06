@@ -23,3 +23,19 @@ class UserDetailsForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['name','lastname']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        instance = getattr(self, 'instance', None)
+
+        if instance:
+            for field_name in ['name', 'lastname']:
+                # Get the original value of the field from the instance
+                original_value = getattr(instance, field_name)
+                # Get the cleaned value from the form
+                cleaned_value = cleaned_data.get(field_name)
+                # If the cleaned value is empty, set it to the original value
+                if cleaned_value == '':
+                    cleaned_data[field_name] = original_value
+
+        return cleaned_data

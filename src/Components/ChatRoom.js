@@ -35,6 +35,7 @@ const ChatRoom = () => {
   const [chatData, setChatData] = useState([]);
   const [messages, setMessages] = useState([]);
   const [settingDisplay, setSettingsDisplay] = useState(false);
+  const [sending, setsending] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [startChat, setStartChat] = useState(false);
   const expand = () => {
@@ -90,7 +91,7 @@ const ChatRoom = () => {
         setChatData(data.chats);
         setMessages(data.messages);
       }
-      if (messages.length >= 0) {
+      if (messages.length > 0) {
         setStartChat(false);
       } else {
         setStartChat(true);
@@ -100,7 +101,13 @@ const ChatRoom = () => {
 
   const handleSend = async (event) => {
     try {
+
       event.preventDefault();
+      if (sending == true) {
+        return
+      } else {
+        setsending(true)
+      }
 
       // Validate if the inputState is not empty
       if (inputState.trim() !== "") {
@@ -140,6 +147,7 @@ const ChatRoom = () => {
     } catch (error) {
       console.error("Error sending message:", error);
     }
+    setsending(false)
   };
 
   const handleAddChatOnServer = async () => {
@@ -181,10 +189,8 @@ const ChatRoom = () => {
         // Assuming chatData is the state variable to store the chat data
         setChatData(data.chats);
         setMessages(data.messages);
-        if (messages.length >= 0) {
+        if (data.messages.length > 0) {
           setStartChat(false);
-        } else {
-          setStartChat(true);
         }
       }
     });
@@ -342,15 +348,15 @@ const ChatRoom = () => {
         </div>
         <div className="chatroom">
           <div className="chatroom-textarea">
-            {!startChat ? (
-              <UserChat
+            {startChat ? (
+              <NewChat
                 messages={messages}
                 chatData={chatData}
                 setChatData={setChatData}
                 setMessages={setMessages}
               />
             ) : (
-              <NewChat
+              <UserChat
                 messages={messages}
                 chatData={chatData}
                 setChatData={setChatData}

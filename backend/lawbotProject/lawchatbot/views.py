@@ -21,6 +21,16 @@ from openai import OpenAI
 
 client = OpenAI()
 
+def createcontext(request, messages):
+    completion = [{"role": "system", "content": "You are a Lawhelp assistant"}]
+    for message in messages:
+        if message["authur"] == "Lawbot":
+            completion.append({"role": "assistant"  , "content": message["message"]})
+        else :
+            completion.append({"role": "user"  , "content": message["message"]})
+    request.session["context"] = completion
+    return 
+
 # Create your views here.
 class HomeView(View):
     def get(self, request):
@@ -124,6 +134,7 @@ class Chat(View):
         
         # Store the chat ID in the session
         request.session["chat_id"] = chat.pk
+        request.session["context"] = []
         print(request.session["chat_id"])
         
         # Return the serialized chat data as a JSON response
@@ -154,6 +165,8 @@ class GetLatestChat(View):
         # Filter chats and messages based on user_id
         messages = list(Messages.objects.filter(chat_id=latest_chat).order_by("created_at").values('message', 'authur', 'like', 'dislike'))
         chats = list(Chats.objects.filter(user_id=request.user).order_by( "-last_modified" ).values("id","name"))
+        
+        createcontext(request, messages=messages)
 
 
         # Return JSON response
@@ -168,6 +181,7 @@ class GetChat(View):
             request.session['chat_id'] = json_data.get('id')
             chat_id = request.session.get('chat_id')
             messages = list(Messages.objects.filter(chat_id=Chats.objects.get(pk=chat_id)).order_by("created_at").values("message","authur","like","dislike"))
+            createcontext(request, messages=messages)
             Chats.objects.get(pk=chat_id).last_modified = timezone.now()
             chats = list(Chats.objects.filter(user_id=request.user).order_by( "-last_modified" ).values("id","name"))
 
@@ -183,6 +197,8 @@ class Message(View):
         try:
             message_content = json.loads(request.body)["message"]
             print(message_content)
+            messages = request.session["context"][-5:]
+            messages.append({"role": "user" , "content": message_content})
             if not message_content:
                 return JsonResponse({"error": "Message content is required"}, status=400)
             
@@ -192,13 +208,12 @@ class Message(View):
             # Add your completion generation code here
             completion = client.chat.completions.create(
                             model="ft:gpt-3.5-turbo-0613:tech-day::96lGas0P",
-                            messages=[
-                            {"role": "system", "content": "You are a Lawhelp assistant"},
-                            {"role": "user", "content": message_content}
-                        ]
+                            messages=messages
             )
             message = Messages.objects.create(message=message_content, authur="User", chat_id=Chats.objects.get(pk=chat_id),user_id=request.user)
             message = str(completion.choices[0].message.content)
+            messages.append({"role": "assistant"  , "content": message})
+            request.session["context"] = messages 
             reply = Messages.objects.create(message=message, authur="LAWBOT", chat_id=Chats.objects.get(pk=chat_id),user_id=request.user).pk
             reply = list(Messages.objects.filter(pk=reply).values('message', 'authur', 'like', 'dislike'))[0]
             if new_chat.exists():
