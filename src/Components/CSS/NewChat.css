@@ -57,6 +57,7 @@
     align-items: center;
     padding: 7px;
     width: 120px;
+    height: 100%;
     border-radius: 10px;
     background-color: black;
     color: #fff;
@@ -128,3 +129,49 @@
     height: 100%;
     font-size: 0.8em;
 }
+
+@media only screen and (max-width: 900px){
+    .option-cards {
+        margin-top: 20px;
+    }
+
+    .cards {
+        height: 100px;
+    }
+
+    .greetings-logo {
+        display: none;
+    }
+
+    .greetings-logo img {
+        width: 35px;
+    }
+
+    .greetings-text {
+        margin-top: 50px;
+        font-size: 1.22em;
+    }
+
+    .main-card {
+        width: 180px;
+    }
+
+    .secondary-card {
+        width: 100%;
+        padding: 5px 10px 5px 10px;
+        margin-right: 0;
+    }
+
+    .vertical-lines {
+        margin: 0 5px 0 5px;
+    }
+
+    
+}
+
+@media only screen and (max-width: 1200px){
+    .card-two{
+        display: none !important;
+    }
+}
+

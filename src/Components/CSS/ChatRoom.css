@@ -1,3 +1,7 @@
+* {
+    user-select: none;
+}
+
 .chatroom-page {
     overflow: hidden;
     align-items: center;
@@ -10,8 +14,9 @@
 }
 
 .sidenav {
+    z-index: 5;
     background: white;
-    width: 23%;
+    width: 360px;
     height: fit-content;
     border-radius: 20px;
     padding: 20px 0 20px 0;
@@ -24,6 +29,7 @@
     justify-content: center;
     align-items: center;
 }
+
 
 .nav-logo-image {
     margin-right: 4px;
@@ -40,7 +46,7 @@
 }
 
 .newchat-search {
-    padding: 0 25px 0 25px;
+    justify-content: center;
     display: flex;
     width: 100%;
     height: 36px;
@@ -115,11 +121,12 @@
 .search-icon {
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: flex-end;
     background: rgb(0, 0, 0);
     color: #fff;
     padding: 0px;
     width: 37px;
+    height: 37px;
     border-radius: 20px;
     transition: 0.3s ease-out;
 }
@@ -137,21 +144,22 @@
     width: 100%;
     border: none;
     outline: none;
+    padding-left: 10px;
 }
 
 .icon-search {
     cursor: pointer;
-    padding: 10px;
+    width: 37px;
+    display: flex;
+    justify-content: center;
+    
 }
 
 .icon-close {
     cursor: pointer;
-    padding: 10px;
-    display: none;
-}
-
-.search-icon:hover {
-    border: 1px solid black;
+    width: 37px;
+    display:  none;
+    justify-content: center;
 }
 
 .search-icon img{
@@ -315,6 +323,54 @@
     border-radius: 50%;
 }
 
+.bars-logo {
+    border-bottom: 1px solid #d6d6d6;
+    padding: 10px 0 5px 0px;
+    background-color: #FCEAE7;
+    width: 100%;
+    font-size: 2.4em;
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: #333333;
+    justify-content: center;
+}
+
+.logo-div {
+    width: 93%;
+    display: flex;
+    justify-content: center;
+    margin-left: -25px;
+    align-items: center;
+}
+
+.nav-logo {
+    width: fit-content;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    font-size: 0.5em;
+    padding: 6px 4px 6px 4px;
+    height: fit-content;
+}
+
+.nav-logo img {
+    width: 24px;
+    margin-right: 4px;
+}
+
+.bars-div {
+    z-index: 4;
+    cursor: pointer;  
+}
+
+.bars-div:focus {
+    outline-color: #00000000;
+}
+
 .chatroom {
     width: 77%;
     height: 100%;
@@ -348,12 +404,12 @@
     background: #fff;
     align-items: center;
     min-height: 40px;
-    width: 640px;
+    width: 80%;
 }
 
 .textarea {
     border-radius: 20px 0 0 20px ;
-    width: 600px;
+    width: 100%;
     height: 40px;
     padding: 12px 12px 12px 3px;
     font-size: 0.8em;
@@ -366,8 +422,6 @@
     width: 0px;
 }
 
-.img-textbox textarea:is(:focus, :valid){
-}
 
 .brain-icon {
     width: 32px;
@@ -487,6 +541,16 @@
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fceae72a, #FCEAE7);
 }
 
+.menu-slide {
+    display: flex !important;
+    transform: translateX(400) !important;
+    transition: 0.4s ease-out;
+}
+
+.slideOut {
+    display: none;
+}
+
 @keyframes pulse {
     100%{
         transform: scale(1.7);
@@ -498,4 +562,61 @@
 @keyframes slider {
     from{transform: translateX(5px); opacity: 0;}
     to{transform: translate(0px); opacity: 1;}
+}
+
+@media only screen and (max-width: 900px){
+    .chatroom-page {
+        font-size: 0.8em;
+    }
+
+    .sidenav {
+        height: 99%;
+        border-radius: 0 20px 20px 0;
+        z-index: 6;
+        position: absolute;
+        transform: translateX(-400px);
+        width: 350px;
+    }
+
+    .sidenav-background {
+        display: none;
+        z-index: 4;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100dvh;
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.493);
+        width: 100%;
+    }
+
+    .slideOut {
+        display: flex;
+        cursor: pointer;
+        font-size: 3em;
+        color: #fff;
+        position: absolute;
+        top: 5px;
+        right: 26px;
+    }
+
+    .chatroom {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .bars-logo {
+        display: flex;
+    }
+
+    .prev-chat-nav {
+        height: 400px;
+        max-width: 400px;
+    }
+
+    .chatroom-textarea {
+        padding: 63px 10px 40px 10px;
+    }
+
+    
 }

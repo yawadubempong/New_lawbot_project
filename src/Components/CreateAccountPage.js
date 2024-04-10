@@ -34,24 +34,7 @@ const CreateAccountPage = () => {
     setPreloader(false);
   }, 2000);
 
-  const [slide, setSlide] = useState("none");
-  const slideStyle = () => {
-    document.getElementById("user-email").style.display = "none";
-    document.getElementById("user-password").style.display = "flex";
-    document.getElementById("user-password").style.animation =
-      "passSlider 0.3s ease-out";
-    document.getElementById("continue").style.display = "none";
-    document.getElementById("signup-btn").style.display = "flex";
-  };
   const [disabled, setdisabled] = useState(false)
-
-  useEffect(() => {
-    if (name !== "" && email !== "") {
-      setSlide("slide");
-    } else {
-      setSlide("none");
-    }
-  }, [name, email]);
 
   const signup = async (data) => {
     try {
@@ -148,33 +131,31 @@ const CreateAccountPage = () => {
                     <div className="line2"></div>
                   </div>
                   <div id="user-email" className="email-input">
-                    <h3>Enter your email address to create an account.</h3>
+                    <h3>Enter your info to create an account.</h3>
                     {errors.__all__ && <p>{errors.__all__.message}</p>}
-                    <p>
-                      Firstname<span> *</span>
-                    </p>
-                    {errors.name && <p>{errors.name.message}</p>}
-                    <input type="text" {...register("name")} />
-                    <p>Lastname</p>
-                    {errors.lastname && <p>{errors.lastname.message}</p>}
-                    <input type="text" {...register("lastname")} />
-                    <p>
-                      Your email<span> *</span>
-                    </p>
+                    <div className="first-last-name">
+                      <div className="first-name">
+                        <div className="label">Firstname<span> *</span></div>
+                        {errors.name && <p>{errors.name.message}</p>}
+                        <input type="text" {...register("name")} />
+                      </div>
+                      <div className="last-name">
+                        <div className="label">Lastname</div>
+                        {errors.lastname && <p>{errors.lastname.message}</p>}
+                        <input type="text" {...register("lastname")} />
+                      </div>
+                    </div>
+                    <div className="label">Your email<span> *</span></div>
                     {errors.email && <p>{errors.email.message}</p>}
                     <input type="email" {...register("email")} />
                   </div>
                 </div>
                 <div id="user-password" className="user-password">
                   <h3>Enter your password to create an account.</h3>
-                  <p>
-                    Password<span> *</span>
-                  </p>
+                  <div className="label">Password<span> *</span></div>
                   {errors.password1 && <p>{errors.password1.message}</p>}
                   <input type="password" {...register("password1")} />
-                  <p>
-                    Confirm password<span> *</span>
-                  </p>
+                  <div className="label">Confirm password<span> *</span></div>
                   {errors.password2 && <p>{errors.password2.message}</p>}
                   <input type="password" {...register("password2")} />
                 </div>

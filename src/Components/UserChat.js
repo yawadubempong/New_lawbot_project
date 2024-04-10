@@ -1,8 +1,24 @@
 import { faClone, faThumbsDown, faThumbsUp } from "@fortawesome/free-regular-svg-icons";
 import "./CSS/UserChat.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useRef } from "react";
+import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+import { useSpeechSynthesis } from "react-speech-kit";
 
 const UserChat = ({ messages }) => {
+    const { speak, voices } = useSpeechSynthesis()
+    const room = useRef()
+
+
+    useEffect(() => {
+        if(messages.length) {
+            room.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "end"
+            })
+        }
+       }, [messages.length])
+
     return (
         <>
             {messages.map((message, index) => (
@@ -31,13 +47,12 @@ const UserChat = ({ messages }) => {
                                 <div><FontAwesomeIcon icon={faThumbsDown} /></div>
                                 <div><FontAwesomeIcon icon={faClone} /></div>
                             </div>
-                            <div className="regen">
-                                <div className="regen-img">
-                                    <img src={require("./Assets/icons8-sync-50.png")} alt="sync icon" />
-                                </div>
-                                <div className="regen-text">
-                                    <p>Regenerate</p>
-                                </div>
+                            <div  className="read-text" onClick={(e)=> {
+                            speak({text: message.message, voice: voices[3]})
+                            }}>
+                                <div id={`${index}`} style={{display: "flex"}} className="speak">
+                                    <FontAwesomeIcon icon={faVolumeHigh} />
+                                </div>  
                             </div>
                         </div>
                     )}

@@ -13,7 +13,6 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition/lib/SpeechRecognition";
 import Settings from "./Settings";
-import { ref } from "yup";
 
 const ChatRoom = () => {
   const startListening = () =>
@@ -24,30 +23,62 @@ const ChatRoom = () => {
     resetTranscript,
     browserSupportSpeechRecognition,
   } = useSpeechRecognition();
-  const [currentChat, setCurrentChat] = useState("newChat");
   const [speech, setSpeech] = useState("start");
   const [inputState, setInputState] = useState("");
-  const [textboxTranscript, setTextboxTranscript] = useState("");
   const textAreaRef = useRef(null);
   const newChat = useRef();
-  const iconInput = document.getElementById("iconInput");
   const searchBtn = useRef();
   const [chatData, setChatData] = useState([]);
   const [messages, setMessages] = useState([]);
   const [settingDisplay, setSettingsDisplay] = useState(false);
   const [sending, setsending] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
   const [startChat, setStartChat] = useState(false);
-  const expand = () => {
-    newChat.classList.toggle("collapse");
-    searchBtn.classList.toggle("expand");
-  };
-  console.log(textboxTranscript);
+  const sidenav = useRef(null)
+  const sidenavBg = useRef(null)
 
-  const active = (e) => {
-    if (e.target === "chat") {
-    }
+  const expand = () => {
+    document.getElementById("newChat").classList.toggle("collapse");
+    document.getElementById("search-btn").classList.toggle("expand")
   };
+
+  const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth
+});
+
+useEffect(() => {
+    const handleResize = () => {
+        setScreenSize({
+            width: window.innerWidth
+        });  
+    };
+    
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+        window.removeEventListener("resize", handleResize)
+    }
+}, [])
+
+useEffect(() => {
+    if(screenSize.width > "900px") {
+        document.querySelector(".sidenav").style.display = "flex"
+    }
+   
+}, [screenSize])
+
+const handleSlideIn = () => {
+    sidenav.current.style.transform = "translateX(0px)";
+    sidenav.current.style.transition = "0.4s ease-out";
+    sidenavBg.current.style.display = "block";
+    sidenavBg.current.style.animation = "fadeIn 0.3s";
+}
+
+const handleSlideOut = () => {
+    sidenav.current.style.transform = "translateX(-400px)";
+    sidenav.current.style.transition = "0.4s ease-out";
+    sidenavBg.current.style.display = "none";
+    sidenavBg.current.style.animation = "fadeIn 0.3s";
+}
 
   useEffect(() => {
     if (inputState === "") {
@@ -256,7 +287,12 @@ const ChatRoom = () => {
         <Settings setSettingsDisplay={setSettingsDisplay} />
       ) : null}
       <div className="chatroom-page">
-        <div className="sidenav">
+        <div ref={sidenavBg} className="sidenav-background">
+            <div className="slideOut" onClick={handleSlideOut}>
+                <FontAwesomeIcon icon={faClose} />
+            </div>
+        </div>
+        <div className="sidenav" ref={sidenav}>
           <div className="nav-logo-title">
             <div className="nav-logo-image">
               <img
@@ -348,6 +384,17 @@ const ChatRoom = () => {
         </div>
         <div className="chatroom">
           <div className="chatroom-textarea">
+            <div className="bars-logo">
+                <div className="bars-div" onClick={handleSlideIn}>
+                    <FontAwesomeIcon icon={faBars} />
+                </div>
+                <div className="logo-div">        
+                    <div className="nav-logo">
+                        <img src={require("./Assets/image 1.png")} alt="weighing scale" />
+                        <div>Law Chatbot</div>
+                    </div>
+                </div>
+            </div>
             {startChat ? (
               <NewChat
                 messages={messages}
@@ -378,6 +425,15 @@ const ChatRoom = () => {
                   className="textarea"
                   placeholder="What's in your mind?"
                   ref={textAreaRef}
+                  onKeyDown={(e) => {
+                    if(e.keyCode === 13){
+                        e.preventDefault()
+                        if(inputState !== "") {
+                            handleSend()
+                        }
+                       setInputState("")
+                    }
+                  }}
                   onChange={(e) => {
                     setInputState(e.target.value);
                     resizeTextArea();

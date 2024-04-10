@@ -52,7 +52,7 @@ const NewChat = () => {
                 </div>
               </div>
             </div>
-            <div className="secondary-card">
+            <div className="secondary-card card-two">
               <div className="title-img-paragraph">
                 <img src={require("./Assets/how-to.png")} alt="" />
                 <div className="card-title">"How to"</div>
@@ -96,7 +96,7 @@ const NewChat = () => {
                 </div>
               </div>
             </div>
-            <div className="secondary-card">
+            <div className="secondary-card card-two">
               <div className="title-img-paragraph">
                 <img src={require("./Assets/allows.png")} alt="" />
                 <div className="card-title">"Allows"</div>
@@ -140,7 +140,7 @@ const NewChat = () => {
                 </div>
               </div>
             </div>
-            <div className="secondary-card">
+            <div className="secondary-card card-two">
               <div className="title-img-paragraph">
                 <img src={require("./Assets/limited.png")} alt="" />
                 <div className="card-title">"Limited"</div>

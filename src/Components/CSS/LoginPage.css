@@ -139,3 +139,16 @@
 .right-image img {
     height: 100%;
 }
+
+@media only screen and (max-width: 500px){
+    .left-form {
+        padding: 5px;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .right-image {
+        display: none;
+    }
+
+}
