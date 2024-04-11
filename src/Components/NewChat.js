@@ -6,7 +6,6 @@ import {
   faGlobe,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect } from "react";
 
 const NewChat = () => {
  

@@ -2,12 +2,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./CSS/ChatRoom.css";
 import NewChat from "./NewChat";
 import UserChat from "./UserChat";
-import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import Chats from "./Chats";
 import { useEffect, useRef, useState } from "react";
 import {
   faClose,
   faMagnifyingGlass,
   faStop,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -30,55 +31,57 @@ const ChatRoom = () => {
   const searchBtn = useRef();
   const [chatData, setChatData] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [results, setResults] = useState([]);
   const [settingDisplay, setSettingsDisplay] = useState(false);
   const [sending, setsending] = useState(false);
   const [startChat, setStartChat] = useState(false);
-  const sidenav = useRef(null)
-  const sidenavBg = useRef(null)
+  const sidenav = useRef(null);
+  const sidenavBg = useRef(null);
+  const searchFieldRef = useRef(null);
+  const [searching, setSearching] = useState(false);
 
   const expand = () => {
     document.getElementById("newChat").classList.toggle("collapse");
-    document.getElementById("search-btn").classList.toggle("expand")
+    document.getElementById("search-btn").classList.toggle("expand");
   };
 
   const [screenSize, setScreenSize] = useState({
-    width: window.innerWidth
-});
+    width: window.innerWidth,
+  });
 
-useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
-        setScreenSize({
-            width: window.innerWidth
-        });  
+      setScreenSize({
+        width: window.innerWidth,
+      });
     };
-    
-    window.addEventListener("resize", handleResize)
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
-        window.removeEventListener("resize", handleResize)
-    }
-}, [])
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
-useEffect(() => {
-    if(screenSize.width > "900px") {
-        document.querySelector(".sidenav").style.display = "flex"
+  useEffect(() => {
+    if (screenSize.width > "900px") {
+      document.querySelector(".sidenav").style.display = "flex";
     }
-   
-}, [screenSize])
+  }, [screenSize]);
 
-const handleSlideIn = () => {
+  const handleSlideIn = () => {
     sidenav.current.style.transform = "translateX(0px)";
     sidenav.current.style.transition = "0.4s ease-out";
     sidenavBg.current.style.display = "block";
     sidenavBg.current.style.animation = "fadeIn 0.3s";
-}
+  };
 
-const handleSlideOut = () => {
+  const handleSlideOut = () => {
     sidenav.current.style.transform = "translateX(-400px)";
     sidenav.current.style.transition = "0.4s ease-out";
     sidenavBg.current.style.display = "none";
     sidenavBg.current.style.animation = "fadeIn 0.3s";
-}
+  };
 
   useEffect(() => {
     if (inputState === "") {
@@ -93,20 +96,6 @@ const handleSlideOut = () => {
   const fetchLatestChatData = async () => {
     try {
       const response = await fetch("/latestchat/", { method: "GET" });
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching latest chat data:", error);
-      return null;
-    }
-  };
-
-  const handleLoadChat = async (id) => {
-    try {
-      const response = await fetch("/loadchat/", {
-        method: "POST",
-        body: JSON.stringify({ id: id }),
-      });
       const data = await response.json();
       return data;
     } catch (error) {
@@ -130,14 +119,12 @@ const handleSlideOut = () => {
     });
   }, []);
 
-  const handleSend = async (event) => {
+  const handleSend = async () => {
     try {
-
-      event.preventDefault();
       if (sending == true) {
-        return
+        return;
       } else {
-        setsending(true)
+        setsending(true);
       }
 
       // Validate if the inputState is not empty
@@ -169,6 +156,7 @@ const handleSlideOut = () => {
           ]);
           console.log("Message sent successfully!");
           setMessages((prevMessages) => [...prevMessages, data]);
+          setsending(false);
           setStartChat(false);
           setInputState("");
         } else {
@@ -178,7 +166,7 @@ const handleSlideOut = () => {
     } catch (error) {
       console.error("Error sending message:", error);
     }
-    setsending(false)
+    setsending(false);
   };
 
   const handleAddChatOnServer = async () => {
@@ -214,7 +202,36 @@ const handleSlideOut = () => {
     });
   };
 
-  const loadChat = (id) => {
+  // Search logic
+  const filteredChats = () => {
+    if (searchFieldRef.current.value.trim() !== "") {
+      setSearching(true);
+      setResults(
+        chatData.filter((elem) => {
+          return elem.name.toLowerCase().includes(searchFieldRef.current.value.toLowerCase());
+        })
+      );
+    } else {
+      setSearching(false);
+      setResults([]);
+    }
+  };
+
+  const handleLoadChat = async (id) => {
+    try {
+      const response = await fetch("/loadchat/", {
+        method: "POST",
+        body: JSON.stringify({ id: id }),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching latest chat data:", error);
+      return null;
+    }
+  };
+
+function loadChat(id) {
     handleLoadChat(id).then((data) => {
       if (data) {
         // Assuming chatData is the state variable to store the chat data
@@ -227,51 +244,33 @@ const handleSlideOut = () => {
     });
   };
 
-  /*useEffect(() => {
-    const submit = async () => {
-      try {
-        // Validate if the inputState is not empty
-        if (inputState.trim() !== "") {
-          const url = "/messages/";
-          const options = {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ message: String(inputState) }),
-          };
+  const handleDeleteChat = async (id) => {
+    try {
+      const response = await fetch("/deletechat/", {
+        method: "POST",
+        body: JSON.stringify({ id: id }),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Could not delete chat:", error);
+      return null;
+    }
+  };
 
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { message: inputState },
-          ]);
-          
-
-          const response = await fetch(url, options);
-          const data = await response.json();
-          // Check if the response is successful
-          if (response.ok) {
-            // Append the new message to the messages array
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              { message: inputState },
-            ]);
-            console.log("Message sent successfully!");
-            setMessages((prevMessages) => [...prevMessages, data.message]);
-            setInputState("");
-            setSend(false);
-          } else {
-            console.error("Error sending message:", response.statusText);
-          }
-          console.log(messages);
+  function deleteChat(id) {
+    handleDeleteChat(id).then((data) => {
+      if (data) {
+        // Assuming chatData is the state variable to store the chat data
+        setChatData(data.chats);
+        if (data.messages) {
+          setMessages(data.messages);
         }
-      } catch (error) {
-        console.error("Error sending message:", error);
       }
-    };
-    submit();
-  }, [send]);
-  */
+    });
+  };
+
+  //
 
   function resizeTextArea() {
     if (!textAreaRef.current) {
@@ -281,6 +280,10 @@ const handleSlideOut = () => {
     textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
   }
 
+  const resetSearch = () => {
+    searchFieldRef.current.value = "";
+  }
+
   return (
     <>
       {settingDisplay === true ? (
@@ -288,9 +291,9 @@ const handleSlideOut = () => {
       ) : null}
       <div className="chatroom-page">
         <div ref={sidenavBg} className="sidenav-background">
-            <div className="slideOut" onClick={handleSlideOut}>
-                <FontAwesomeIcon icon={faClose} />
-            </div>
+          <div className="slideOut" onClick={handleSlideOut}>
+            <FontAwesomeIcon icon={faClose} />
+          </div>
         </div>
         <div className="sidenav" ref={sidenav}>
           <div className="nav-logo-title">
@@ -319,13 +322,18 @@ const handleSlideOut = () => {
             </div>
             <div id="search-btn" ref={searchBtn} className="search-icon">
               <div id="iconInput" className="icon-input">
-                <input type={"text"} placeholder="Search.." />
+                <input
+                  type={"text"}
+                  placeholder="Search.."
+                  ref={searchFieldRef}
+                  onChange={filteredChats}
+                />
               </div>
               <div onClick={expand} className="icon-btns">
                 <div className="icon-search">
                   <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </div>
-                <div className="icon-close">
+                <div className="icon-close" onClick={resetSearch}>
                   <FontAwesomeIcon icon={faClose} />
                 </div>
               </div>
@@ -333,31 +341,14 @@ const handleSlideOut = () => {
           </div>
           <div className="navlinks-title">
             <div>Your conversations</div>
-            <div>Clear All</div>
           </div>
 
           <div className="prev-chat-nav">
-            {chatData.map((chat) => (
-              <div
-                className="chat"
-                key={chat.id}
-                onClick={() => {
-                  loadChat(chat.id);
-                }}
-              >
-                <div className="chaticon-sentence">
-                  <img
-                    className="chatimg"
-                    src={require("./Assets/icons8-comments-96.png")}
-                    alt="comment icon"
-                  />
-                  <div className="chatsentence">{chat.name}</div>
-                </div>
-                <div className="delete">
-                  <FontAwesomeIcon icon={faTrashCan} />
-                </div>
-              </div>
-            ))}
+            {searching == true ? (
+              <Chats chats={results} deleteChat={deleteChat} loadChat={loadChat}/>
+            ) : (
+              <Chats chats={chatData} deleteChat={deleteChat} loadChat={loadChat} />
+            )}
           </div>
           <div className="horizontal-line">
             <div className="hr one"></div>
@@ -385,15 +376,18 @@ const handleSlideOut = () => {
         <div className="chatroom">
           <div className="chatroom-textarea">
             <div className="bars-logo">
-                <div className="bars-div" onClick={handleSlideIn}>
-                    <FontAwesomeIcon icon={faBars} />
+              <div className="bars-div" onClick={handleSlideIn}>
+                <FontAwesomeIcon icon={faBars} />
+              </div>
+              <div className="logo-div">
+                <div className="nav-logo">
+                  <img
+                    src={require("./Assets/image 1.png")}
+                    alt="weighing scale"
+                  />
+                  <div>Law Chatbot</div>
                 </div>
-                <div className="logo-div">        
-                    <div className="nav-logo">
-                        <img src={require("./Assets/image 1.png")} alt="weighing scale" />
-                        <div>Law Chatbot</div>
-                    </div>
-                </div>
+              </div>
             </div>
             {startChat ? (
               <NewChat
@@ -411,6 +405,14 @@ const handleSlideOut = () => {
               />
             )}
           </div>
+          {/* Using the state sending */}
+          {sending ? (
+            <div>Waiting for bot response</div>
+          ) : (
+            <div>
+              <br></br>
+            </div>
+          )}
           <div className="textbox">
             <div className="img-textbox">
               <img
@@ -426,12 +428,9 @@ const handleSlideOut = () => {
                   placeholder="What's in your mind?"
                   ref={textAreaRef}
                   onKeyDown={(e) => {
-                    if(e.keyCode === 13){
-                        e.preventDefault()
-                        if(inputState !== "") {
-                            handleSend()
-                        }
-                       setInputState("")
+                    if (e.keyCode === 13 && inputState !== "") {
+                      e.preventDefault();
+                      handleSend();
                     }
                   }}
                   onChange={(e) => {
@@ -454,7 +453,10 @@ const handleSlideOut = () => {
               {/* <div className="textbox-input"><div contentEditable="true" data-autoresize  id="txt" placeholder="What's in your mind?" onChange={handleChange}></div></div> */}
               <img
                 className="send-icon"
-                onClick={handleSend}
+                onClick={(event) => {
+                  event.preventDefault();
+                  handleSend();
+                }}
                 src={require("./Assets/icon1.png")}
                 alt="paper plane"
               />
