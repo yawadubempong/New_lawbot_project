@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from "react";
 import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 import { useSpeechSynthesis } from "react-speech-kit";
 
-const UserChat = ({ messages }) => {
+const UserChat = ({ messages, sending }) => {
     const { speak, voices } = useSpeechSynthesis()
     const room = useRef()
 
@@ -58,6 +58,17 @@ const UserChat = ({ messages }) => {
                     )}
                 </div>
             ))}
+            {sending ? (
+            <div className="loading">
+              <div className="load"></div>
+              <div className="load"></div>
+              <div className="load"></div>
+            </div>
+          ) : (
+            <div>
+              <br></br>
+            </div>
+          )}
         </>
     );
 };

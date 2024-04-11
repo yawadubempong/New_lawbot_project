@@ -396,6 +396,7 @@ function loadChat(id) {
               />
             ) : (
               <UserChat
+                sending={sending}
                 messages={messages}
                 chatData={chatData}
                 setChatData={setChatData}
@@ -403,18 +404,6 @@ function loadChat(id) {
               />
             )}
           </div>
-          {/* Using the state sending */}
-          {sending ? (
-            <div className="loading">
-              <div className="load"></div>
-              <div className="load"></div>
-              <div className="load"></div>
-            </div>
-          ) : (
-            <div>
-              <br></br>
-            </div>
-          )}
           <div className="textbox">
             <div className="img-textbox">
               <img

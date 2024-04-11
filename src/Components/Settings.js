@@ -95,14 +95,6 @@ const Settings = ({ setSettingsDisplay }) => {
     <>
       <div className="Settings">
         <div className="settings-card">
-          <div
-            onClick={() => {
-              setSettingsDisplay(false);
-            }}
-            className="close-icon"
-          >
-            <FontAwesomeIcon icon={faClose} />
-          </div>
           <div className="leftside">
             <h4>SETTINGS</h4>
             <div className="settings-nav">
@@ -138,6 +130,14 @@ const Settings = ({ setSettingsDisplay }) => {
           </div>
           <div className="settings-vline"></div>
           <div className="rightside">
+          <div
+            onClick={() => {
+              setSettingsDisplay(false);
+            }}
+            className="close-icon"
+          >
+            <FontAwesomeIcon icon={faClose} />
+          </div>
             {settings === "account-details" ? (
               <div>
                 <div className="account-profile">
