@@ -101,6 +101,41 @@
     border-radius: 50%;
 }
 
+.loading {
+    background: #cecece;
+    display: flex;
+    width: 60px;
+    height: 25px;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 20px;
+    padding: 0 10px 0 10px;
+}
+
+.load {
+    background: rgb(59, 59, 59);
+    width: 6px;
+    height: 6px;
+    border-radius: 20px;
+}
+
+.load:nth-child(1) {
+    animation: loading 0.9s linear infinite alternate ;
+}
+.load:nth-child(2) {
+    animation: loading 0.9s 0.1s linear infinite alternate;
+}
+.load:nth-child(3) {
+    animation: loading 0.9s 0.2s linear infinite alternate;
+}
+
+@keyframes loading {
+    0%{transform: translateY(4px);}
+    30%{transform: translateY(0px);}
+    70%{transform: translateY(-4px);}  
+    100%{transform: translateY(0px);}  
+}
+
 @media only screen and (max-width: 900px){
     .user-bot-chat {
         padding: 0px 0px 10px 0px;

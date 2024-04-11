@@ -20,9 +20,7 @@ const ChatRoom = () => {
     SpeechRecognition.startListening({ continuous: true, language: "en-IN" });
   const {
     transcript,
-    listening,
-    resetTranscript,
-    browserSupportSpeechRecognition,
+    resetTranscript
   } = useSpeechRecognition();
   const [speech, setSpeech] = useState("start");
   const [inputState, setInputState] = useState("");
@@ -117,11 +115,11 @@ const ChatRoom = () => {
         setStartChat(true);
       }
     });
-  }, []);
+  });
 
   const handleSend = async () => {
     try {
-      if (sending == true) {
+      if (sending === true) {
         return;
       } else {
         setsending(true);
@@ -344,7 +342,7 @@ function loadChat(id) {
           </div>
 
           <div className="prev-chat-nav">
-            {searching == true ? (
+            {searching === true ? (
               <Chats chats={results} deleteChat={deleteChat} loadChat={loadChat}/>
             ) : (
               <Chats chats={chatData} deleteChat={deleteChat} loadChat={loadChat} />
@@ -407,7 +405,11 @@ function loadChat(id) {
           </div>
           {/* Using the state sending */}
           {sending ? (
-            <div>Waiting for bot response</div>
+            <div className="loading">
+              <div className="load"></div>
+              <div className="load"></div>
+              <div className="load"></div>
+            </div>
           ) : (
             <div>
               <br></br>
