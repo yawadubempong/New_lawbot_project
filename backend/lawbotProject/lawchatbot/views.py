@@ -22,7 +22,7 @@ from openai import OpenAI
 client = OpenAI()
 
 def createcontext(request, messages):
-    completion = [{"role": "system", "content": "You are a Lawhelp assistant"}]
+    completion = [{"role": "system", "content": "You are Lawbot, a Lawhelp assistant for Ghanaians. Only answer law questions."}]
     for message in messages:
         if message["authur"] == "Lawbot":
             completion.append({"role": "assistant"  , "content": message["message"]})
@@ -247,3 +247,23 @@ class UserDetails(View):
             return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+        
+        
+@method_decorator([login_required, csrf_exempt], name='dispatch')            
+class DeleteChat(View):
+    def post(self,request):
+        try:
+            json_data = json.loads(request.body)
+            id = json_data.get('id')
+            chat_id = request.session.get('chat_id')
+            messages = Messages.objects.filter(chat_id=Chats.objects.get(pk=id)).delete()
+            chats = Chats.objects.filter(pk=id).delete()
+            chats = list(Chats.objects.filter(user_id=request.user).order_by( "-last_modified" ).values("id","name"))
+            if chat_id == id:
+                request.session['chat_id'] = None
+                return JsonResponse({'messages': [], 'chats': chats})
+            
+            return JsonResponse({'success': True, 'chats': chats})
+        
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Could not retrieve that chat'}, status=400)
