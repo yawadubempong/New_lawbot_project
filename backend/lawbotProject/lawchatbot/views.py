@@ -197,13 +197,17 @@ class Message(View):
         try:
             message_content = json.loads(request.body)["message"]
             print(message_content)
+            chat_id = request.session.get('chat_id') 
+            try: 
+                Chats.objects.filter(pk=chat_id).update(last_modified=timezone.now())
+            except:
+                chat_id = Chats.objects.create(name="New Chat", user_id=request.user).pk
+                request.session['chat_id'] = chat_id
+                request.session["context"] = []
             messages = request.session["context"][-5:]
             messages.append({"role": "user" , "content": message_content})
             if not message_content:
-                return JsonResponse({"error": "Message content is required"}, status=400)
-            
-            chat_id = request.session.get('chat_id')
-            Chats.objects.filter(pk=chat_id).update(last_modified=timezone.now())
+                return JsonResponse({"error": "Message content is required"}, status=400) 
             new_chat = Chats.objects.filter(name="New Chat", pk=chat_id)
             # Add your completion generation code here
             completion = client.chat.completions.create(
