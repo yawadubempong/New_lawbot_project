@@ -115,7 +115,7 @@ const ChatRoom = () => {
         setStartChat(true);
       }
     });
-  });
+  },[]);
 
   const handleSend = async () => {
     try {
@@ -257,6 +257,7 @@ function loadChat(id) {
   };
 
   function deleteChat(id) {
+    if(chatData.length > 1) {
     handleDeleteChat(id).then((data) => {
       if (data) {
         // Assuming chatData is the state variable to store the chat data
@@ -266,6 +267,7 @@ function loadChat(id) {
         }
       }
     });
+  }
   };
 
   //

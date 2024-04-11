@@ -1,8 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./CSS/ChatRoom.css";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import { useEffect } from "react";
 
 const Chats = ({ chats , loadChat , deleteChat }) => {
+
+  useEffect(() => {
+    console.log(chats);
+},[chats])
 
     return (
         <>

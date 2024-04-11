@@ -19,6 +19,10 @@ const UserChat = ({ messages, sending }) => {
         }
        }, [messages.length])
 
+    useEffect(() => {
+        console.log(messages);
+    },[messages])
+
     return (
         <>
             {messages.map((message, index) => (
