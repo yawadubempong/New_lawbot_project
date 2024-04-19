@@ -169,6 +169,9 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'emails'
+
 
 SITE_ID = 1
 
@@ -191,7 +194,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 # Disable username requirement
 ACCOUNT_USERNAME_REQUIRED = False
 # Set email verification to mandatory (optional)
-ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 # Set a minimum password length (optional)
 ACCOUNT_PASSWORD_MIN_LENGTH = 8
 #Acount signup redirect url

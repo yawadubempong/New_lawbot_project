@@ -85,5 +85,3 @@ class Messages(models.Model):
         user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
         chat_id = models.ForeignKey(Chats,on_delete=models.CASCADE ,null=False)
         created_at = models.DateTimeField(auto_now_add=True)
-
-
