@@ -207,9 +207,10 @@
 
 .chaticon-sentence {
     display: flex;
+    align-items: center;
 }
 
-.chat img {
+.chat .chatimg {
     margin-right: 6px;
     height: 17px;
 }
@@ -227,6 +228,16 @@
 .active .chatimg,
 .active .chatsentence {
     transform: translateX(10px);
+}
+
+.active .blue-dot {
+    display: block;
+}
+
+.blue-dot {
+    display: none;
+    width: 10px;
+    height: 10px;
 }
 
 .chat:hover .chatimg,
