@@ -19,7 +19,7 @@ from . forms import CustomSignupForm, UserDetailsForm
 #Open AI integration 
 from openai import OpenAI
 
-client = OpenAI()
+client = OpenAI(api_key="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")
 
 def createcontext(request, messages):
     completion = [{"role": "system", "content": "You are Lawbot, a Lawhelp assistant for Ghanaians. Only answer law questions."}]

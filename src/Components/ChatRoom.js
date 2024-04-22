@@ -122,6 +122,15 @@ const ChatRoom = () => {
       if (sending === true) {
         return;
       } else {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            message: String(inputState), 
+            authur: "User",
+            like: false,
+            dislike: false,
+          }, { auther: "Sending"}
+        ]);
         setsending(true);
       }
 
@@ -143,25 +152,19 @@ const ChatRoom = () => {
         // Check if the response is successful
         if (response.ok) {
           // Append the new message to the messages array
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              message: String(inputState),
-              authur: "User",
-              like: false,
-              dislike: false,
-            },
-          ]);
+          
           console.log("Message sent successfully!");
-          setMessages((prevMessages) => [...prevMessages, data]);
           setsending(false);
+          setMessages((prevMessages) => [...prevMessages.slice(0, -1), data]);
           setStartChat(false);
           setInputState("");
         } else {
+          setMessages((prevMessages) => [...prevMessages.slice(0, -1)]);
           console.error("Error sending message:", response.statusText);
         }
       }
     } catch (error) {
+      setMessages((prevMessages) => [...prevMessages.slice(0, -1)]);
       console.error("Error sending message:", error);
     }
     setsending(false);

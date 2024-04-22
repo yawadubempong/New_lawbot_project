@@ -11,13 +11,13 @@ const UserChat = ({ messages, sending }) => {
 
 
     useEffect(() => {
-        if(messages.length) {
+        if(messages) {
             room.current?.scrollIntoView({
                 behavior: "smooth",
                 block: "end"
             })
         }
-       }, [messages.length])
+       }, [messages])
 
     useEffect(() => {
         console.log(messages);
@@ -42,7 +42,19 @@ const UserChat = ({ messages, sending }) => {
                         </div>
                     )}
                     <div className={message.authur === "LAWBOT" ? "bot-text" : "user-text"}>
-                        <p>{message.message}</p>
+                        {(message.authur == "Sending") ? (
+                            <div className="loading">
+                            <div className="load"></div>
+                            <div className="load"></div>
+                            <div className="load"></div>
+                            </div>
+                        ) : (
+                            <div>
+                            <p>{message.message}</p>
+                            <br></br>
+                            </div>
+                        )}
+
                     </div>
                     {message.authur === "LAWBOT" && (
                         <div className="like-copy-regen">
@@ -62,17 +74,6 @@ const UserChat = ({ messages, sending }) => {
                     )}
                 </div>
             ))}
-            {sending ? (
-            <div className="loading">
-              <div className="load"></div>
-              <div className="load"></div>
-              <div className="load"></div>
-            </div>
-          ) : (
-            <div>
-              <br></br>
-            </div>
-          )}
         </>
     );
 };
