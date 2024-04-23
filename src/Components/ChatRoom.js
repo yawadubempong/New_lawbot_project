@@ -129,7 +129,7 @@ const ChatRoom = () => {
             authur: "User",
             like: false,
             dislike: false,
-          }, { auther: "Sending"}
+          }, { authur: "LAWBOT"}
         ]);
         setsending(true);
       }

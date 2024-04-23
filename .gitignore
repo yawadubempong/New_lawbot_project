@@ -7,6 +7,7 @@
 lawbotenv
 lawchatbot
 myenv
+views.py
 
 
 # testing
@@ -25,3 +26,4 @@ myenv
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+backend/lawbotProject/lawchatbot/views.py
