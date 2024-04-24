@@ -21,6 +21,7 @@ from openai import OpenAI
 
 client = OpenAI()
 
+
 def createcontext(request, messages):
     completion = [{"role": "system", "content": "You are Lawbot, a Lawhelp assistant for Ghanaians. Only answer law questions."}]
     for message in messages:
