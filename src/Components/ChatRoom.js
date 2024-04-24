@@ -37,6 +37,7 @@ const ChatRoom = () => {
   const sidenavBg = useRef(null);
   const searchFieldRef = useRef(null);
   const [searching, setSearching] = useState(false);
+  const [error, setError] = useState(false)
 
   const expand = () => {
     document.getElementById("newChat").classList.toggle("collapse");
@@ -119,8 +120,15 @@ const ChatRoom = () => {
 
   const handleSend = async () => {
     try {
-      if (sending === true) {
+      if(sending){
         return;
+      }
+      if(error){
+        setError(false)
+        setMessages((prevMessages) => [
+          ...prevMessages, { authur: "LAWBOT"}
+        ]);
+        setsending(true)
       } else {
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -161,11 +169,13 @@ const ChatRoom = () => {
         } else {
           setMessages((prevMessages) => [...prevMessages.slice(0, -1)]);
           console.error("Error sending message:", response.statusText);
+          setError(true)
         }
       }
     } catch (error) {
       setMessages((prevMessages) => [...prevMessages.slice(0, -1)]);
       console.error("Error sending message:", error);
+      setError(true)
     }
     setsending(false);
   };
@@ -183,12 +193,14 @@ const ChatRoom = () => {
       // Check if the response is successful
       if (!response.ok) {
         console.error("Error sending message to server:", response.statusText);
+        setError(true)
       } else {
         const data = response.json();
         return data;
       }
     } catch (error) {
       console.error("Error sending message to server:", error);
+      setError(true)
     }
   };
 
@@ -401,6 +413,8 @@ function loadChat(id) {
               />
             ) : (
               <UserChat
+                handleSend={handleSend}
+                error={error}
                 sending={sending}
                 messages={messages}
                 chatData={chatData}

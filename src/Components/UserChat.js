@@ -6,10 +6,10 @@ import {
 import "./CSS/UserChat.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef } from "react";
-import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+import { faRotateForward, faTriangleExclamation, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 import { useSpeechSynthesis } from "react-speech-kit";
 
-const UserChat = ({ messages, sending }) => {
+const UserChat = ({ messages, sending, error, handleSend}) => {
   const { speak, voices } = useSpeechSynthesis();
   const room = useRef();
 
@@ -60,8 +60,8 @@ const UserChat = ({ messages, sending }) => {
                 <div className="load"></div>
                 <div className="load"></div>
               </div>
-            ) : (
-              <div>
+            ) : ( 
+              <div>             
                 <p>{message.message}</p>
                 {message.authur === "LAWBOT" && (
                   <div className="like-copy-regen">
@@ -97,6 +97,30 @@ const UserChat = ({ messages, sending }) => {
           </div>
         </div>
       ))}
+      {error ? (
+        <div className="user-bot-chat bot-response">
+          <div className="bot-text">
+            <div className="bot-profile">
+              <div className="bot-name">
+                <p>CHAT A.I +</p>
+              </div>
+              <div className="bot-arrow">
+                <img src={require("./Assets/arrow icon.png")} alt="arrow" />
+              </div>
+            </div>
+            <div className="warning-text">
+                <div><FontAwesomeIcon icon={faTriangleExclamation} /></div>
+                <p>Couldn't fetch - Check your internet connection</p>
+            </div>
+            <div className="regenerate">
+                <div><FontAwesomeIcon icon={faRotateForward} /></div>
+                <p onClick={handleSend}>Regenerate</p>
+            </div>
+          </div>
+        </div>
+      ) : 
+        null
+      }
       <br></br>
       <br></br>
       <br></br>
